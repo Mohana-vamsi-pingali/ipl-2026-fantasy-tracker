@@ -62,8 +62,9 @@ export default function PlayerProfileClient({ playerStats, trendData, pieData, h
         <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
           <h3 className="text-lg font-bold text-white mb-1">Score Trend</h3>
           <p className="text-xs text-gray-500 mb-6">Historical scores with average reference line</p>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full overflow-x-auto custom-scrollbar pb-2">
+            <div className="h-[300px]" style={{ minWidth: `${Math.max(trendData.length * 45, 600)}px` }}>
+              <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
@@ -81,6 +82,7 @@ export default function PlayerProfileClient({ playerStats, trendData, pieData, h
                 />
               </LineChart>
             </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
@@ -88,8 +90,9 @@ export default function PlayerProfileClient({ playerStats, trendData, pieData, h
         <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
           <h3 className="text-lg font-bold text-white mb-1">Position Trend</h3>
           <p className="text-xs text-gray-500 mb-6">Daily rank per match. Rank 1 is at the top.</p>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full overflow-x-auto custom-scrollbar pb-2">
+            <div className="h-[300px]" style={{ minWidth: `${Math.max(trendData.length * 45, 600)}px` }}>
+              <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
@@ -114,6 +117,7 @@ export default function PlayerProfileClient({ playerStats, trendData, pieData, h
                 />
               </LineChart>
             </ResponsiveContainer>
+            </div>
           </div>
         </div>
 

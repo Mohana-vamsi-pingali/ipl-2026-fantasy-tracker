@@ -206,9 +206,9 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <RadialBarChart
-              cx="50%" cy="50%"
-              innerRadius="20%" outerRadius="90%"
-              barSize={20} data={winRateData}
+              cx="50%" cy="45%"
+              innerRadius="30%" outerRadius="100%"
+              barSize={44} data={winRateData}
               startAngle={90} endAngle={-270}
             >
               <RadialBar
@@ -219,7 +219,13 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
                 cornerRadius={10}
                 label={{ position: 'insideStart', fill: '#fff', fontSize: 11, formatter: (v) => `${v}%` }}
               />
-              <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 12, color: '#9ca3af' }} />
+              <Legend
+                iconSize={10}
+                layout="horizontal"
+                verticalAlign="bottom"
+                align="center"
+                wrapperStyle={{ fontSize: 12, color: '#9ca3af', paddingTop: '20px' }}
+              />
               <RechartsTooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -387,22 +393,24 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
       <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
         <h3 className="text-lg font-bold text-white mb-1">Daily Point Leader History</h3>
         <p className="text-xs text-gray-500 mb-6">Which player secured Rank 1 in each match</p>
-        <div className="h-[250px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={leaderHistoryData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} horizontal={false} />
-              <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
-              <YAxis hide domain={[0, 1]} />
-              <RechartsTooltip content={<LeaderHistoryTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Legend
-                wrapperStyle={{ paddingTop: '10px', fontSize: 12 }}
-                formatter={(value) => <span className="text-gray-300">{value}</span>}
-              />
-              {allPlayers.map((player, i) => (
-                <Bar key={player} dataKey={player} name={player} stackId="a" fill={COLORS[i % COLORS.length]} radius={[4, 4, 4, 4]} />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
+        <div className="w-full overflow-x-auto custom-scrollbar pb-2">
+          <div className="h-[250px]" style={{ minWidth: `${Math.max(leaderHistoryData.length * 45, 600)}px` }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={leaderHistoryData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} horizontal={false} />
+                <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
+                <YAxis hide domain={[0, 1]} />
+                <RechartsTooltip content={<LeaderHistoryTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                <Legend
+                  wrapperStyle={{ paddingTop: '10px', fontSize: 12 }}
+                  formatter={(value) => <span className="text-gray-300">{value}</span>}
+                />
+                {allPlayers.map((player, i) => (
+                  <Bar key={player} dataKey={player} name={player} stackId="a" fill={COLORS[i % COLORS.length]} radius={[4, 4, 4, 4]} />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
