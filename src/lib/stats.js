@@ -202,3 +202,57 @@ export function getDailyLeaders() {
     }
   })
 }
+
+// ---------------------------------------------------------------------------
+// getTopScores(limit)
+// ---------------------------------------------------------------------------
+
+export function getTopScores(limit = 19) {
+  const allScores = []
+  for (const match of matches) {
+    for (const result of match.results) {
+      allScores.push({
+        score: result.score,
+        player: result.player,
+        matchNumber: match.matchNumber,
+        teams: match.teams
+      })
+    }
+  }
+  return allScores.sort((a, b) => b.score - a.score).slice(0, limit)
+}
+
+// ---------------------------------------------------------------------------
+// getAllWinStreaks()
+// ---------------------------------------------------------------------------
+
+export function getAllWinStreaks() {
+  const allStreaks = []
+  
+  for (const player of allPlayers) {
+    let currentStreakCount = 0
+    let currentStreakMatches = []
+    
+    for (const match of matches) {
+      const result = match.results.find((r) => r.player === player)
+      if (!result) continue // Skipped match doesn't break streak
+      
+      if (result.rank === 1) {
+        currentStreakCount++
+        currentStreakMatches.push(match.matchNumber)
+      } else {
+        if (currentStreakCount > 0) {
+          allStreaks.push({ player, streak: currentStreakCount, matches: [...currentStreakMatches] })
+        }
+        currentStreakCount = 0
+        currentStreakMatches = []
+      }
+    }
+    if (currentStreakCount > 0) {
+      allStreaks.push({ player, streak: currentStreakCount, matches: [...currentStreakMatches] })
+    }
+  }
+  
+  // Sort descending by streak length
+  return allStreaks.sort((a, b) => b.streak - a.streak)
+}
