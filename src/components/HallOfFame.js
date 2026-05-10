@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getAllPlayerStats, getPlayerStats } from '@/lib/stats'
 
 // ── Record definitions ──────────────────────────────────────────────────────
@@ -145,6 +145,17 @@ function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, o
 
 export default function HallOfFame() {
   const [activeModal, setActiveModal] = useState(null)
+  
+  useEffect(() => {
+    if (activeModal) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [activeModal])
   
   const allStats = getAllPlayerStats()
   const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
