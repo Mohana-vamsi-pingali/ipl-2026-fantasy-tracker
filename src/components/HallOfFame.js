@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { getAllPlayerStats, getPlayerStats } from '@/lib/stats'
 
 // ── Record definitions ──────────────────────────────────────────────────────
@@ -89,11 +92,14 @@ const CARD_THEMES = [
   { bg: 'from-teal-500/10  to-teal-900/5',   border: 'border-teal-400/30',   accent: '#1ABC9C',   glow: 'rgba(26,188,156,0.12)'  },
 ]
 
-function HofCard({ emoji, title, statValue, players, subtitle, themeIndex }) {
+function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, onClick }) {
   const theme = CARD_THEMES[themeIndex % CARD_THEMES.length]
+  const isClickable = !!onClick
+
   return (
     <div
-      className={`relative flex flex-col items-center text-center rounded-2xl p-6 border ${theme.border} bg-gradient-to-b ${theme.bg} transition-transform duration-200 hover:-translate-y-1`}
+      onClick={onClick}
+      className={`relative flex flex-col items-center text-center rounded-2xl p-6 border ${theme.border} bg-gradient-to-b ${theme.bg} transition-transform duration-200 ${isClickable ? 'cursor-pointer hover:scale-[1.02]' : 'hover:-translate-y-1'}`}
       style={{ boxShadow: `0 0 24px ${theme.glow}, 0 4px 16px rgba(0,0,0,0.4)` }}
     >
       {/* Coloured top accent line */}
@@ -106,7 +112,12 @@ function HofCard({ emoji, title, statValue, players, subtitle, themeIndex }) {
       <span className="text-4xl mb-3 select-none">{emoji}</span>
 
       {/* Record title */}
-      <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-2">{title}</p>
+      <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-2 flex items-center gap-1">
+        {title}
+        {isClickable && (
+          <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/10 text-white/70 text-[10px] ml-1" title="Click for full table">ℹ</span>
+        )}
+      </p>
 
       {/* Big stat number */}
       <p className="text-3xl font-black mb-1" style={{ color: theme.accent }}>
@@ -133,6 +144,8 @@ function HofCard({ emoji, title, statValue, players, subtitle, themeIndex }) {
 // ── Main export ─────────────────────────────────────────────────────────────
 
 export default function HallOfFame() {
+  const [activeModal, setActiveModal] = useState(null)
+  
   const allStats = getAllPlayerStats()
   const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
     computeRecords(allStats)
@@ -153,6 +166,7 @@ export default function HallOfFame() {
       subtitle: mostWins.length === 1 ? `${mostWins[0].winRate}% win rate` : 'Multiple players',
     },
     {
+      id: 'most-top3',
       emoji: '🏅',
       title: 'Most Top 3 Finishes',
       statValue: mostTop3[0].top3,
@@ -218,10 +232,68 @@ export default function HallOfFame() {
       <div className="flex flex-wrap justify-center gap-4">
         {cards.map((card, i) => (
           <div key={card.title} className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.67rem)] lg:w-[calc(25%-0.75rem)]">
-            <HofCard {...card} themeIndex={i} />
+            <HofCard 
+              {...card} 
+              themeIndex={i} 
+              onClick={card.id === 'most-top3' ? () => setActiveModal('most-top3') : null}
+            />
           </div>
         ))}
       </div>
+
+      {/* Top 3 Leaderboard Modal */}
+      {activeModal === 'most-top3' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
+          <div 
+            className="bg-[#0a0f1c] border border-white/10 rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl relative"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button 
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              onClick={() => setActiveModal(null)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+
+            <div className="p-6 border-b border-white/10">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <span>🏅</span> Top 3 Finishes Leaderboard
+              </h3>
+              <p className="text-sm text-gray-400 mt-1">Total times each player ranked 1st, 2nd, or 3rd</p>
+            </div>
+
+            <div className="p-0 overflow-y-auto custom-scrollbar">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-white/5 sticky top-0 z-10">
+                  <tr>
+                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+                    <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Top 3s</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {[...allStats]
+                    .sort((a, b) => b.top3 - a.top3)
+                    .map((stat, idx) => (
+                    <tr key={stat.player} className="hover:bg-white/5 transition-colors">
+                      <td className="px-6 py-3 text-sm text-gray-400">
+                        {idx + 1}
+                      </td>
+                      <td className="px-6 py-3 text-sm font-bold text-white">
+                        {stat.player}
+                      </td>
+                      <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">
+                        {stat.top3}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }
