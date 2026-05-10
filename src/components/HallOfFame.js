@@ -4,50 +4,73 @@ import { getAllPlayerStats, getPlayerStats } from '@/lib/stats'
 
 function computeRecords(allStats) {
   // 0. Highest Total Points
-  const highestTotalPoints = [...allStats].sort((a, b) => b.totalPoints - a.totalPoints)[0]
+  const maxPoints = Math.max(...allStats.map(s => s.totalPoints))
+  const highestTotalPoints = allStats.filter(s => s.totalPoints === maxPoints)
 
   // 1. Most Wins
-  const mostWins = [...allStats].sort((a, b) => b.wins - a.wins)[0]
+  const maxWins = Math.max(...allStats.map(s => s.wins))
+  const mostWins = allStats.filter(s => s.wins === maxWins)
 
-  // 2. Highest Single Game Score — scan each player's scores array
-  let highScoreEntry = { score: 0, player: '', matchNumber: 0, teams: '' }
+  // 2. Highest Single Game Score
+  let maxScore = -Infinity
   for (const s of allStats) {
     const ps = getPlayerStats(s.player)
     for (const entry of ps.scores) {
-      if (entry.score > highScoreEntry.score) {
-        highScoreEntry = { score: entry.score, player: s.player, matchNumber: entry.matchNumber, teams: entry.teams }
+      if (entry.score > maxScore) maxScore = entry.score
+    }
+  }
+  const highestScoreEntries = []
+  for (const s of allStats) {
+    const ps = getPlayerStats(s.player)
+    for (const entry of ps.scores) {
+      if (entry.score === maxScore) {
+        highestScoreEntries.push({ score: entry.score, player: s.player, matchNumber: entry.matchNumber, teams: entry.teams })
       }
     }
   }
+  // Deduplicate highestScore players just in case one player got the same high score twice
+  const uniqueHighestScorePlayers = [...new Set(highestScoreEntries.map(e => e.player))]
 
   // 3. Longest Win Streak
-  let bestStreakEntry = { player: '', bestStreak: 0 }
+  let maxStreak = 0
   for (const s of allStats) {
     const ps = getPlayerStats(s.player)
-    if (ps.bestStreak > bestStreakEntry.bestStreak) {
-      bestStreakEntry = { player: s.player, bestStreak: ps.bestStreak }
-    }
+    if (ps.bestStreak > maxStreak) maxStreak = ps.bestStreak
   }
+  const bestStreakEntries = allStats
+    .filter(s => getPlayerStats(s.player).bestStreak === maxStreak)
+    .map(s => ({ player: s.player, bestStreak: maxStreak }))
 
   // 4. Most Games Played
-  const mostGames = [...allStats].sort((a, b) => b.gamesPlayed - a.gamesPlayed)[0]
+  const maxGames = Math.max(...allStats.map(s => s.gamesPlayed))
+  const mostGames = allStats.filter(s => s.gamesPlayed === maxGames)
 
   // 5. Most Skips
-  const mostSkips = [...allStats].sort((a, b) => b.skips - a.skips)[0]
+  const maxSkips = Math.max(...allStats.map(s => s.skips))
+  const mostSkips = allStats.filter(s => s.skips === maxSkips)
 
   // 6. Most Consistent (lowest std deviation, min 5 games played)
   const eligible = allStats.filter((s) => s.gamesPlayed >= 5)
-  let mostConsistent = null
+  let mostConsistent = []
   if (eligible.length > 0) {
     const withStdDev = eligible.map((s) => ({
       player: s.player,
       gamesPlayed: s.gamesPlayed,
       consistencyScore: getPlayerStats(s.player).consistencyScore,
     }))
-    mostConsistent = withStdDev.sort((a, b) => a.consistencyScore - b.consistencyScore)[0]
+    const minStdDev = Math.min(...withStdDev.map(s => s.consistencyScore))
+    mostConsistent = withStdDev.filter(s => s.consistencyScore === minStdDev)
   }
 
-  return { highestTotalPoints, mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent }
+  return { 
+    highestTotalPoints, 
+    mostWins, 
+    highestScoreEntries: { score: maxScore, players: uniqueHighestScorePlayers, subtitle: highestScoreEntries.length === 1 ? `Match ${highestScoreEntries[0].matchNumber} · ${highestScoreEntries[0].teams}` : 'Multiple matches' }, 
+    bestStreakEntries, 
+    mostGames, 
+    mostSkips, 
+    mostConsistent 
+  }
 }
 
 // ── Individual Hall of Fame card ────────────────────────────────────────────
@@ -61,7 +84,7 @@ const CARD_THEMES = [
   { bg: 'from-teal-500/10  to-teal-900/5',   border: 'border-teal-400/30',   accent: '#1ABC9C',   glow: 'rgba(26,188,156,0.12)'  },
 ]
 
-function HofCard({ emoji, title, statValue, player, subtitle, themeIndex }) {
+function HofCard({ emoji, title, statValue, players, subtitle, themeIndex }) {
   const theme = CARD_THEMES[themeIndex % CARD_THEMES.length]
   return (
     <div
@@ -85,8 +108,14 @@ function HofCard({ emoji, title, statValue, player, subtitle, themeIndex }) {
         {statValue}
       </p>
 
-      {/* Player name */}
-      <p className="text-base font-bold text-white mb-1">{player}</p>
+      {/* Player name(s) */}
+      {players.length > 2 ? (
+        <div className="flex flex-col gap-0.5 mb-1 mt-1">
+          {players.map(p => <p key={p} className="text-sm font-bold text-white leading-tight">{p}</p>)}
+        </div>
+      ) : (
+        <p className="text-base font-bold text-white mb-1 mt-1">{players.join(', ')}</p>
+      )}
 
       {/* Optional subtitle (e.g. match info) */}
       {subtitle && (
@@ -100,60 +129,60 @@ function HofCard({ emoji, title, statValue, player, subtitle, themeIndex }) {
 
 export default function HallOfFame() {
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent } =
+  const { highestTotalPoints, mostWins, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
     computeRecords(allStats)
 
   const cards = [
     {
       emoji: '🌟',
       title: 'Highest Total Points',
-      statValue: highestTotalPoints.totalPoints.toLocaleString(),
-      player: highestTotalPoints.player,
-      subtitle: `${highestTotalPoints.gamesPlayed} games played`,
+      statValue: highestTotalPoints[0].totalPoints.toLocaleString(),
+      players: highestTotalPoints.map(p => p.player),
+      subtitle: highestTotalPoints.length === 1 ? `${highestTotalPoints[0].gamesPlayed} games played` : 'Multiple players',
     },
     {
       emoji: '🏆',
       title: 'Most Wins',
-      statValue: mostWins.wins,
-      player: mostWins.player,
-      subtitle: `${mostWins.winRate}% win rate`,
+      statValue: mostWins[0].wins,
+      players: mostWins.map(p => p.player),
+      subtitle: mostWins.length === 1 ? `${mostWins[0].winRate}% win rate` : 'Multiple players',
     },
     {
       emoji: '⚡',
       title: 'Highest Score',
-      statValue: highScoreEntry.score.toLocaleString(),
-      player: highScoreEntry.player,
-      subtitle: `Match ${highScoreEntry.matchNumber} · ${highScoreEntry.teams}`,
+      statValue: highestScoreEntries.score.toLocaleString(),
+      players: highestScoreEntries.players,
+      subtitle: highestScoreEntries.subtitle,
     },
     {
       emoji: '🔥',
       title: 'Longest Win Streak',
-      statValue: `${bestStreakEntry.bestStreak}`,
-      player: bestStreakEntry.player,
-      subtitle: bestStreakEntry.bestStreak === 1 ? '1 consecutive win' : `${bestStreakEntry.bestStreak} consecutive wins`,
+      statValue: `${bestStreakEntries[0]?.bestStreak || 0}`,
+      players: bestStreakEntries.map(p => p.player),
+      subtitle: bestStreakEntries[0]?.bestStreak === 1 ? '1 consecutive win' : `${bestStreakEntries[0]?.bestStreak || 0} consecutive wins`,
     },
     {
       emoji: '📅',
       title: 'Most Games Played',
-      statValue: mostGames.gamesPlayed,
-      player: mostGames.player,
-      subtitle: `${mostGames.skips} skips`,
+      statValue: mostGames[0].gamesPlayed,
+      players: mostGames.map(p => p.player),
+      subtitle: mostGames.length === 1 ? `${mostGames[0].skips} skips` : 'Multiple players',
     },
     {
       emoji: '💀',
       title: 'Most Skips',
-      statValue: mostSkips.skips,
-      player: mostSkips.player,
-      subtitle: `${mostSkips.gamesPlayed} games played`,
+      statValue: mostSkips[0].skips,
+      players: mostSkips.map(p => p.player),
+      subtitle: mostSkips.length === 1 ? `${mostSkips[0].gamesPlayed} games played` : 'Multiple players',
     },
     {
       emoji: '🎯',
       title: 'Most Consistent',
-      statValue: mostConsistent ? `±${mostConsistent.consistencyScore}` : 'N/A',
-      player: mostConsistent?.player ?? '—',
-      subtitle: mostConsistent
-        ? `Std deviation · ${mostConsistent.gamesPlayed} games`
-        : 'Min 5 games required',
+      statValue: mostConsistent.length > 0 ? `±${mostConsistent[0].consistencyScore}` : 'N/A',
+      players: mostConsistent.length > 0 ? mostConsistent.map(p => p.player) : ['—'],
+      subtitle: mostConsistent.length === 1
+        ? `Std deviation · ${mostConsistent[0].gamesPlayed} games`
+        : mostConsistent.length > 1 ? 'Std deviation · Multiple players' : 'Min 5 games required',
     },
   ]
 
