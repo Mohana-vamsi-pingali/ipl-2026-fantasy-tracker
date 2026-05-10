@@ -11,6 +11,10 @@ function computeRecords(allStats) {
   const maxWins = Math.max(...allStats.map(s => s.wins))
   const mostWins = allStats.filter(s => s.wins === maxWins)
 
+  // 1b. Most Top 3 Finishes
+  const maxTop3 = Math.max(...allStats.map(s => s.top3))
+  const mostTop3 = allStats.filter(s => s.top3 === maxTop3)
+
   // 2. Highest Single Game Score
   let maxScore = -Infinity
   for (const s of allStats) {
@@ -65,6 +69,7 @@ function computeRecords(allStats) {
   return { 
     highestTotalPoints, 
     mostWins, 
+    mostTop3,
     highestScoreEntries: { score: maxScore, players: uniqueHighestScorePlayers, subtitle: highestScoreEntries.length === 1 ? `Match ${highestScoreEntries[0].matchNumber} · ${highestScoreEntries[0].teams}` : 'Multiple matches' }, 
     bestStreakEntries, 
     mostGames, 
@@ -129,7 +134,7 @@ function HofCard({ emoji, title, statValue, players, subtitle, themeIndex }) {
 
 export default function HallOfFame() {
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
+  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
     computeRecords(allStats)
 
   const cards = [
@@ -146,6 +151,13 @@ export default function HallOfFame() {
       statValue: mostWins[0].wins,
       players: mostWins.map(p => p.player),
       subtitle: mostWins.length === 1 ? `${mostWins[0].winRate}% win rate` : 'Multiple players',
+    },
+    {
+      emoji: '🏅',
+      title: 'Most Top 3 Finishes',
+      statValue: mostTop3[0].top3,
+      players: mostTop3.map(p => p.player),
+      subtitle: mostTop3.length === 1 ? `${Math.round((mostTop3[0].top3 / mostTop3[0].gamesPlayed) * 100)}% podium rate` : 'Multiple players',
     },
     {
       emoji: '⚡',

@@ -63,6 +63,7 @@ export function getAllPlayerStats() {
     const totalPoints = entries.reduce((sum, e) => sum + e.score, 0)
     const avgPoints = gamesPlayed > 0 ? round1(totalPoints / gamesPlayed) : 0
     const wins = entries.filter((e) => e.rank === 1).length
+    const top3 = entries.filter((e) => e.rank <= 3).length
     const winRate = gamesPlayed > 0 ? round1((wins / gamesPlayed) * 100) : 0
     const avgPosition = gamesPlayed > 0 ? round1(entries.reduce((sum, e) => sum + e.rank, 0) / gamesPlayed) : 0
     const scores = entries.map((e) => e.score)
@@ -76,6 +77,7 @@ export function getAllPlayerStats() {
       totalPoints,
       avgPoints,
       wins,
+      top3,
       winRate,
       avgPosition,
       bestScore,
