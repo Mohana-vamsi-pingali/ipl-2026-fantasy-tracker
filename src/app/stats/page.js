@@ -37,7 +37,7 @@ export default function StatsPage() {
       <div className="mb-10">
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Analytics &{' '}
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">
+          <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-teal-500">
             Trends
           </span>
         </h1>

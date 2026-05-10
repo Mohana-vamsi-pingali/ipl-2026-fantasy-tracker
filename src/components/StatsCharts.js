@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell,
   RadialBarChart, RadialBar, Legend,
@@ -26,7 +26,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
   // --- Data pre-processing ---
   const totalPointsData = [...playerStats].sort((a, b) => a.totalPoints - b.totalPoints)
   const avgPointsData = [...playerStats].sort((a, b) => a.avgPoints - b.avgPoints)
-  
+
   const winRateData = [...playerStats]
     .filter(p => p.winRate > 0)
     .sort((a, b) => a.winRate - b.winRate)
@@ -68,11 +68,11 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
 
   // Daily Leader History (stacked bar chart, value = 1)
   const leaderHistoryData = dailyLeaders.map(dl => {
-    const dataPoint = { 
-      name: `M${dl.matchNumber}`, 
-      date: dl.date, 
-      teams: dl.teams, 
-      winner: dl.winner 
+    const dataPoint = {
+      name: `M${dl.matchNumber}`,
+      date: dl.date,
+      teams: dl.teams,
+      winner: dl.winner
     }
     if (dl.winner) {
       dataPoint[dl.winner] = 1
@@ -156,7 +156,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
-      
+
       {/* Chart 1: Total Points */}
       <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl">
         <h3 className="text-lg font-bold text-white mb-1">Total Points Comparison</h3>
@@ -205,9 +205,9 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
         <p className="text-xs text-gray-500 mb-6">Percentage of matches won (excludes 0% players)</p>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
-            <RadialBarChart 
-              cx="50%" cy="50%" 
-              innerRadius="20%" outerRadius="90%" 
+            <RadialBarChart
+              cx="50%" cy="50%"
+              innerRadius="20%" outerRadius="90%"
               barSize={20} data={winRateData}
               startAngle={90} endAngle={-270}
             >
@@ -220,7 +220,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
                 label={{ position: 'insideStart', fill: '#fff', fontSize: 11, formatter: (v) => `${v}%` }}
               />
               <Legend iconSize={10} layout="vertical" verticalAlign="middle" wrapperStyle={{ right: 0, fontSize: 12, color: '#9ca3af' }} />
-              <RechartsTooltip 
+              <RechartsTooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
@@ -250,7 +250,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
                 <XAxis type="number" stroke="#6b7280" fontSize={12} allowDecimals={false} />
                 <YAxis dataKey="player" type="category" stroke="#9ca3af" fontSize={12} width={80} />
-                <RechartsTooltip 
+                <RechartsTooltip
                   cursor={{ fill: 'rgba(255,255,255,0.02)' }}
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
@@ -276,7 +276,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
       </div>
 
       {/* Chart 4: Score Trend Over Time */}
-      <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
+      {/* <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
         <div className="flex justify-between items-start mb-6">
           <div>
             <h3 className="text-lg font-bold text-white mb-1">Score Trend Over Time (Form)</h3>
@@ -314,9 +314,9 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
 
-      {/* Chart 5: Position Trend Over Time */}
+      {/* Chart 5: Position Trend Over Time
       <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
         <div className="flex justify-between items-start mb-6">
           <div>
@@ -330,15 +330,15 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
             <LineChart data={positionTrendData} margin={{ top: 20, right: 20, left: 10, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
               <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
-              <YAxis 
-                stroke="#6b7280" 
-                fontSize={11} 
-                domain={[1, allPlayers.length]} 
-                reversed={true} 
+              <YAxis
+                stroke="#6b7280"
+                fontSize={11}
+                domain={[1, allPlayers.length]}
+                reversed={true}
                 tickCount={allPlayers.length}
                 interval={0}
               />
-              <RechartsTooltip 
+              <RechartsTooltip
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
                     return (
@@ -356,8 +356,8 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
                   return null
                 }}
               />
-              <Legend 
-                wrapperStyle={{ paddingTop: '20px', fontSize: 12 }} 
+              <Legend
+                wrapperStyle={{ paddingTop: '20px', fontSize: 12 }}
                 onClick={togglePlayerLine}
                 formatter={(value) => {
                   return <span style={{ color: hiddenPlayers.has(value) ? '#4b5563' : '#d1d5db', transition: 'color 0.2s', cursor: 'pointer' }}>{value}</span>
@@ -379,7 +379,9 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </div> */}
+
+      <H2HMatrix allPlayers={allPlayers} h2hMatrix={h2hMatrix} />
 
       {/* Chart 9: Daily Point Leader History */}
       <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
@@ -392,8 +394,8 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
               <XAxis dataKey="name" stroke="#6b7280" fontSize={11} tickMargin={10} />
               <YAxis hide domain={[0, 1]} />
               <RechartsTooltip content={<LeaderHistoryTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Legend 
-                wrapperStyle={{ paddingTop: '10px', fontSize: 12 }} 
+              <Legend
+                wrapperStyle={{ paddingTop: '10px', fontSize: 12 }}
                 formatter={(value) => <span className="text-gray-300">{value}</span>}
               />
               {allPlayers.map((player, i) => (
@@ -408,7 +410,7 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
       <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2">
         <h3 className="text-lg font-bold text-white mb-1">Score Consistency vs. Average Points</h3>
         <p className="text-xs text-gray-500 mb-6">Scatter plot identifying player archetypes. High average points is better. Low standard deviation (variance) is better.</p>
-        
+
         <div className="relative h-[500px]">
           {/* Quadrant Labels */}
           <div className="absolute top-8 left-16 text-[10px] text-gray-500 uppercase tracking-widest bg-[#0a0f1c]/80 p-1 rounded z-10 pointer-events-none">
@@ -427,27 +429,27 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis 
-                type="number" 
-                dataKey="avgPoints" 
-                name="Average Points" 
-                domain={['dataMin - 10', 'dataMax + 10']} 
-                stroke="#6b7280" 
-                fontSize={12} 
+              <XAxis
+                type="number"
+                dataKey="avgPoints"
+                name="Average Points"
+                domain={['dataMin - 10', 'dataMax + 10']}
+                stroke="#6b7280"
+                fontSize={12}
                 label={{ value: 'Average Points →', position: 'bottom', fill: '#9ca3af', fontSize: 12, offset: 0 }}
               />
-              <YAxis 
-                type="number" 
-                dataKey="consistencyScore" 
-                name="Std Dev" 
-                domain={['dataMin - 5', 'dataMax + 5']} 
-                stroke="#6b7280" 
-                fontSize={12} 
+              <YAxis
+                type="number"
+                dataKey="consistencyScore"
+                name="Std Dev"
+                domain={['dataMin - 5', 'dataMax + 5']}
+                stroke="#6b7280"
+                fontSize={12}
                 label={{ value: 'Standard Deviation (Variance) ↑', angle: -90, position: 'left', fill: '#9ca3af', fontSize: 12 }}
               />
               <ZAxis type="number" range={[100, 100]} />
               <RechartsTooltip content={<ScatterTooltip />} cursor={{ strokeDasharray: '3 3' }} />
-              
+
               {/* Quadrant Dividers */}
               <ReferenceLine x={scatterAvgPoints} stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
               <ReferenceLine y={scatterAvgStdDev} stroke="rgba(255,255,255,0.1)" strokeDasharray="3 3" />
@@ -462,58 +464,83 @@ export default function StatsCharts({ playerStats, matches, dailyLeaders, h2hMat
         </div>
       </div>
 
-      {/* Chart 6: Head-to-Head Matrix */}
-      <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2 overflow-x-auto">
-        <h3 className="text-lg font-bold text-white mb-1">Head-to-Head Matrix</h3>
-        <p className="text-xs text-gray-500 mb-6">Read rows across: Number of times Row Player ranked higher than Column Player</p>
-        
-        <div className="min-w-[700px]">
-          <div className="grid" style={{ gridTemplateColumns: `100px repeat(${allPlayers.length}, minmax(0, 1fr))` }}>
-            {/* Header Row */}
-            <div className="p-2"></div>
-            {allPlayers.map(p => (
-              <div key={`header-${p}`} className="p-2 text-center text-xs font-bold text-gray-400 rotate-[-45deg] origin-bottom-left truncate h-12 flex items-end justify-center">
-                {p}
-              </div>
-            ))}
-            
-            {/* Matrix Rows */}
-            {allPlayers.map((rowPlayer, rowIndex) => (
-              <React.Fragment key={`row-${rowPlayer}`}>
-                <div className="p-2 text-right text-xs font-bold text-white border-r border-white/10 flex items-center justify-end pr-4">
-                  {rowPlayer}
-                </div>
-                {allPlayers.map((colPlayer) => {
-                  const val = h2hMatrix[rowPlayer][colPlayer]
-                  const isSelf = val === null
-                  
-                  // Color intensity based on max possible wins (matches played together)
-                  // Simplified: higher number = more blue/purple intensity
-                  let bgOpacity = 0
-                  if (!isSelf && val > 0) {
-                    bgOpacity = Math.min(0.1 + (val / 20), 0.9) // 20 is an arbitrary scale max for 52 matches
-                  }
 
-                  return (
-                    <div 
-                      key={`${rowPlayer}-${colPlayer}`}
-                      className="aspect-square border border-white/5 flex items-center justify-center text-sm font-semibold transition-colors hover:border-yellow-400/50 cursor-default"
-                      style={{
-                        backgroundColor: isSelf ? 'rgba(255,255,255,0.02)' : `rgba(0, 212, 255, ${bgOpacity})`,
-                        color: isSelf ? '#4b5563' : (bgOpacity > 0.4 ? '#fff' : '#9ca3af')
-                      }}
-                      title={`${rowPlayer} beat ${colPlayer} ${val} times`}
-                    >
-                      {isSelf ? '—' : val}
-                    </div>
-                  )
-                })}
-              </React.Fragment>
-            ))}
-          </div>
+    </div>
+  )
+}
+
+function H2HMatrix({ allPlayers, h2hMatrix }) {
+  const [activeH2H, setActiveH2H] = useState(null)
+
+  useEffect(() => {
+    const handleClickOutside = () => setActiveH2H(null)
+    if (activeH2H) {
+      document.addEventListener('click', handleClickOutside)
+    }
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [activeH2H])
+
+  return (
+    <div className="bg-[#0a0f1c] rounded-2xl p-6 border border-white/5 shadow-2xl lg:col-span-2 overflow-x-auto">
+      <h3 className="text-lg font-bold text-white mb-1">Head-to-Head Matrix</h3>
+      <p className="text-xs text-gray-500 mb-6">Read rows across: Number of times Row Player ranked higher than Column Player</p>
+
+      <div className="min-w-[700px]">
+        <div className="grid" style={{ gridTemplateColumns: `100px repeat(${allPlayers.length}, minmax(0, 1fr))` }}>
+          {/* Header Row */}
+          <div className="p-2"></div>
+          {allPlayers.map(p => (
+            <div key={`header-${p}`} className="p-2 text-center text-xs font-bold text-gray-400 rotate-[-45deg] origin-bottom-left truncate h-12 flex items-end justify-center">
+              {p}
+            </div>
+          ))}
+
+          {/* Matrix Rows */}
+          {allPlayers.map((rowPlayer, rowIndex) => (
+            <React.Fragment key={`row-${rowPlayer}`}>
+              <div className="p-2 text-right text-xs font-bold text-white border-r border-white/10 flex items-center justify-end pr-4">
+                {rowPlayer}
+              </div>
+              {allPlayers.map((colPlayer) => {
+                const val = h2hMatrix[rowPlayer][colPlayer]
+                const isSelf = val === null
+
+                let bgOpacity = 0
+                if (!isSelf && val > 0) {
+                  bgOpacity = Math.min(0.1 + (val / 20), 0.9)
+                }
+
+                return (
+                  <div
+                    key={`${rowPlayer}-${colPlayer}`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      if (!isSelf) {
+                        setActiveH2H(activeH2H?.row === rowPlayer && activeH2H?.col === colPlayer ? null : { row: rowPlayer, col: colPlayer })
+                      }
+                    }}
+                    className="relative aspect-square border border-white/5 flex items-center justify-center text-sm font-semibold transition-colors hover:border-yellow-400/50 cursor-pointer"
+                    style={{
+                      backgroundColor: isSelf ? 'rgba(255,255,255,0.02)' : `rgba(0, 212, 255, ${bgOpacity})`,
+                      color: isSelf ? '#4b5563' : (bgOpacity > 0.4 ? '#fff' : '#9ca3af')
+                    }}
+                    title={`${rowPlayer} beat ${colPlayer} ${val} times`}
+                  >
+                    {isSelf ? '—' : val}
+
+                    {activeH2H?.row === rowPlayer && activeH2H?.col === colPlayer && (
+                      <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 w-max bg-[#0e1628] border border-white/20 p-2 rounded shadow-2xl text-xs text-center z-50 pointer-events-none">
+                        <span className="font-bold text-white">{rowPlayer}</span> beat <span className="font-bold text-white">{colPlayer}</span><br />
+                        <span className="text-yellow-400 font-bold">{val} times</span>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </React.Fragment>
+          ))}
         </div>
       </div>
-
     </div>
   )
 }

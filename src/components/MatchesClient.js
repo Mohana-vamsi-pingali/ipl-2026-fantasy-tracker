@@ -39,7 +39,7 @@ export default function MatchesClient({ matchDetails }) {
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Season{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-electric-blue bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(to right, #00D4FF, #9B59B6)'}}>
+            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-blue-400 to-electric-blue" style={{ backgroundImage: 'linear-gradient(to bottom, #00D4FF, #9B59B6)'}}>
               Matches
             </span>
           </h1>

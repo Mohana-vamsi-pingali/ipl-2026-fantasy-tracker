@@ -3,6 +3,9 @@ import { getAllPlayerStats, getPlayerStats } from '@/lib/stats'
 // ── Record definitions ──────────────────────────────────────────────────────
 
 function computeRecords(allStats) {
+  // 0. Highest Total Points
+  const highestTotalPoints = [...allStats].sort((a, b) => b.totalPoints - a.totalPoints)[0]
+
   // 1. Most Wins
   const mostWins = [...allStats].sort((a, b) => b.wins - a.wins)[0]
 
@@ -44,7 +47,7 @@ function computeRecords(allStats) {
     mostConsistent = withStdDev.sort((a, b) => a.consistencyScore - b.consistencyScore)[0]
   }
 
-  return { mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent }
+  return { highestTotalPoints, mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent }
 }
 
 // ── Individual Hall of Fame card ────────────────────────────────────────────
@@ -97,10 +100,17 @@ function HofCard({ emoji, title, statValue, player, subtitle, themeIndex }) {
 
 export default function HallOfFame() {
   const allStats = getAllPlayerStats()
-  const { mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent } =
+  const { highestTotalPoints, mostWins, highScoreEntry, bestStreakEntry, mostGames, mostSkips, mostConsistent } =
     computeRecords(allStats)
 
   const cards = [
+    {
+      emoji: '🌟',
+      title: 'Highest Total Points',
+      statValue: highestTotalPoints.totalPoints.toLocaleString(),
+      player: highestTotalPoints.player,
+      subtitle: `${highestTotalPoints.gamesPlayed} games played`,
+    },
     {
       emoji: '🏆',
       title: 'Most Wins',
@@ -156,17 +166,19 @@ export default function HallOfFame() {
           className="text-2xl font-extrabold tracking-tight text-white"
         >
           Hall of{' '}
-          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-yellow-400 to-orange-500">
             Fame
           </span>
         </h2>
         <p className="mt-1 text-sm text-gray-500">Season records — updated every match</p>
       </div>
 
-      {/* 2-col on mobile, 3-col on md+ */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      {/* 2-col on mobile, 3-col on md, 4-col on lg. Using flex wrap with centering for uneven last row. */}
+      <div className="flex flex-wrap justify-center gap-4">
         {cards.map((card, i) => (
-          <HofCard key={card.title} {...card} themeIndex={i} />
+          <div key={card.title} className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.67rem)] lg:w-[calc(25%-0.75rem)]">
+            <HofCard {...card} themeIndex={i} />
+          </div>
         ))}
       </div>
     </section>

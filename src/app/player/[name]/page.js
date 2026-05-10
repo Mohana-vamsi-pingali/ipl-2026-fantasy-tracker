@@ -88,7 +88,7 @@ export default async function PlayerProfilePage({ params }) {
             <span className="mr-1">←</span> Back to Leaderboard
           </Link>
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{playerName}</span>
+            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-blue-400 to-purple-400">{playerName}</span>
           </h1>
           <p className="mt-2 text-gray-400 text-lg">
             Season Profile & Performance Analytics

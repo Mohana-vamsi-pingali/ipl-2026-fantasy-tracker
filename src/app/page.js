@@ -1,6 +1,7 @@
 import { getAllPlayerStats } from '@/lib/stats'
 import HomePageClient from '@/components/HomePageClient'
 import HallOfFame from '@/components/HallOfFame'
+import Podiums from '@/components/Podiums'
 
 export const metadata = {
   title: 'Leaderboard · IPL Fantasy Tracker 2026',
@@ -19,7 +20,7 @@ export default function HomePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Season{' '}
-          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+          <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-yellow-400 to-orange-500">
             Leaderboard
           </span>
         </h1>
@@ -40,6 +41,9 @@ export default function HomePage() {
           👥 Players: <span className="font-bold ml-1">{stats.length}</span>
         </div>
       </div>
+
+      {/* Podiums */}
+      <Podiums />
 
       {/* Client section: sort dropdown + cards + table */}
       <HomePageClient stats={stats} totalMatches={totalMatches} />

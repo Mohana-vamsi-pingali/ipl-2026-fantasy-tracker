@@ -66,7 +66,7 @@ export default async function MatchDetailPage({ params }) {
           <span className="mr-1">←</span> Back to Matches
         </Link>
         <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-          Match {match.matchNumber} · <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{match.teams}</span>
+          Match {match.matchNumber} · <span className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-blue-400 to-purple-400">{match.teams}</span>
         </h1>
         <p className="mt-2 text-gray-400">{dateStr}</p>
       </div>

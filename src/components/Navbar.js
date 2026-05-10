@@ -7,6 +7,7 @@ import { useState } from 'react'
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/matches', label: 'Matches' },
+  { href: '/compare', label: 'Compare' },
   { href: '/stats', label: 'Stats' },
 ]
 
@@ -24,7 +25,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 select-none">
           <span className="text-xl">🏏</span>
-          <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-orange-500 bg-clip-text text-transparent font-extrabold text-lg tracking-tight leading-none">
+          <span className="font-extrabold text-lg tracking-tight leading-none text-yellow-400">
             IPL Fantasy 2026
           </span>
         </Link>
@@ -66,9 +67,8 @@ export default function Navbar() {
 
       {/* Mobile dropdown */}
       <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          menuOpen ? 'max-h-60 border-t border-white/10' : 'max-h-0'
-        }`}
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-60 border-t border-white/10' : 'max-h-0'
+          }`}
       >
         <ul className="flex flex-col px-4 py-2 gap-1 bg-[#06091a]">
           {navLinks.map(({ href, label }) => (

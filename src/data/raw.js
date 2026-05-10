@@ -1,500 +1,532 @@
 export const rawData = `
-Match-1 CSK vs MI
-1-@Abhishek -1045
-2-@Pranay -1020
-3-@Ricky -998
-4-@Bhanu -975
-5-@Vamsi -940
-6-@Sai Teja -912
-7-@Prem -880
-8-@Arjun -845
-9-@Narsi Reddy -800
+Match-3 CSK vs RR
+1-@Prem -533
+2-@Vamsi -528
+3-@Krishna -487
+3-@Arjun -487
+4-@Bhanu -355
+5-@Pranay -327.5
 
-Match-2 RR vs RCB
-1-@Pranay -1032
-2-@Ricky -1010
-3-@Abhishek -985
-4-@Vamsi -950
-5-@Bhanu -921
-6-@Arjun -888
-7-@Prem -855
-8-@Sai Teja -820
+Match-4 GT vs PK
+1-@Arjun -672.5
+2-@Pranay -650.5
+3-@Narsi Reddy -641
+4-@Vamsi -582
+5-@Abhishek -551
+6-@Sai Teja -539.5
+7-@Prem -514
+8-@Bhanu -503
 
-Match-3 KKR vs PBKS
-1-@Ricky -1078
-2-@Vamsi -1055
-3-@Narsi Reddy -1020
-4-@Pranay -988
-5-@Bhanu -951
-6-@Prem -910
-7-@Sai Teja -874
-8-@Abhishek -830
-9-@Arjun -795
+Match-5 DC vs LSG
+1-@Abhishek -617.5
+2-@Pranay -615.5
+3-@Narsi Reddy -592.5
+4-@Vamsi -571.5
+5-@Arjun -550.5
+6-@Bhanu -510.5
+7-@Prem -490.5
+8-@Ricky -357
+9-@Sai Teja -298
 
-Match-4 SRH vs DC
-1-@Bhanu -1062
-2-@Sai Teja -1038
-3-@Abhishek -1005
-4-@Narsi Reddy -970
-5-@Vamsi -933
-6-@Pranay -898
-7-@Arjun -860
+Match-6 KKR vs SRH
+1-@Ricky -842
+2-@Abhishek -820
+3-@Arjun -753
+4-@Narsi Reddy -697.5
+5-@Prem -693
+6-@Bhanu -689
+7-@Sai Teja -687
+8-@Vamsi -676
+9-@Pranay -673
 
-Match-5 GT vs LSG
-1-@Vamsi -1091
-2-@Arjun -1065
-3-@Pranay -1030
-4-@Ricky -994
-5-@Sai Teja -957
-6-@Abhishek -919
-7-@Bhanu -883
-8-@Prem -840
-9-@Narsi Reddy -801
+Match-7 CSK vs PK
+1-@Arjun -799.5
+2-@Pranay -795.5
+3-@Ricky -779.5
+4-@Narsi -771
+5-@Prem -661
+6-@Bhanu -657
+7-@Sai Teja -645
+8-@Vamsi -630.5
 
-Match-6 CSK vs RCB
-1-@Arjun -1050
-2-@Prem -1025
-3-@Bhanu -1000
-4-@Vamsi -968
-5-@Ricky -932
-6-@Abhishek -897
-7-@Narsi Reddy -860
-8-@Pranay -822
+Match-8 MI vs DC
+1-@Arjun -688
+2-@Prem -515
+3-@Abhishek -492
+4-@Vamsi -429.5
+5-@Narsi Reddy -416
+6-@Pranay -372
+7-@Ricky -336
 
-Match-7 MI vs KKR
-1-@Sai Teja -1085
-2-@Abhishek -1060
-3-@Arjun -1028
-4-@Prem -990
-5-@Pranay -952
-6-@Narsi Reddy -915
-7-@Vamsi -878
-8-@Ricky -840
-9-@Bhanu -800
+Match-9 GT vs RR
+1-@Arjun -1056
+2-@Prem -901.5
+3-@Vamsi -899.5
+4-@Ricky -862
+5-@Narsi Reddy -811.5
+6-@Pranay -804.5
+7-@Bhanu -787.5
+8-@Sai Teja -726
 
-Match-8 PBKS vs RR
-1-@Narsi Reddy -1040
-2-@Vamsi -1015
-3-@Sai Teja -985
-4-@Abhishek -952
-5-@Pranay -918
-6-@Arjun -882
-7-@Bhanu -845
+Match-10 SRH vs LSG
+1-@Ricky -768.5
+2-@Abhishek -714
+2-@Sai Teja -714
+4-@Arjun -675
+5-@Krishna -659
+6-@Pranay -636
+7-@Prem -582.5
+8-@Vamsi -578.5
+9-@Narsi Reddy -521.5
+10-@Bhanu -509.5
 
-Match-9 DC vs GT
-1-@Prem -1070
-2-@Ricky -1048
-3-@Pranay -1015
-4-@Sai Teja -978
-5-@Bhanu -941
-6-@Vamsi -905
-7-@Arjun -868
-8-@Narsi Reddy -830
-9-@Abhishek -791
+Match-11 RCB vs CSK
+1-@Sai Teja -983
+2-@Arjun -975
+3-@Pranay -884.5
+4-@Krishna -831
+5-@Narsi Reddy -822
+6-@Vamsi -775
+7-@Ricky -632.5
+8-@Prem -584
 
-Match-10 LSG vs SRH
-1-@Abhishek -1088
-2-@Bhanu -1062
-3-@Narsi Reddy -1030
-4-@Prem -994
-5-@Ricky -957
-6-@Sai Teja -920
-7-@Vamsi -883
-8-@Pranay -845
+Match-13 MI vs RR
+1-@Ricky -626.5
+2-@Vamsi -609.5
+3-@Krishna -604.5
+4-@Prem -590.5
+5-@Narsi Reddy -574.5
+6-@Pranay -558
+7-@Arjun -548
+8-@Sai Teja -507
 
-Match-11 RCB vs KKR
-1-@Pranay -1055
-2-@Arjun -1032
-3-@Vamsi -1000
-4-@Abhishek -964
-5-@Sai Teja -928
-6-@Prem -891
-7-@Narsi Reddy -854
-8-@Bhanu -816
-9-@Ricky -778
+Match-14 DC vs GT 
+1-@Ricky -1006
+2-@Arjun -905
+3-@Vamsi -886
+4-@Prem -878
+5-@Bhanu -848
+6-@Sai Teja -827.5
+7-@Narsi Reddy -810
+8-@Pranay -782.5
 
-Match-12 MI vs RR
-1-@Ricky -1075
-2-@Sai Teja -1050
-3-@Prem -1018
-4-@Narsi Reddy -982
-5-@Arjun -946
-6-@Vamsi -910
-7-@Abhishek -873
+Match-15 KKR vs LSG
+1-@Bhanu -708
+2-@Abhishek -652.5
+3-@Arjun -637
+4-@Prem -623
+5-@Narsi Reddy -608.5
+6-@Sai Teja -530.5
+7-@Ricky -515.5
+8-@Vamsi -512.5
+9-@Pranay -510
 
-Match-13 CSK vs PBKS
-1-@Vamsi -1093
-2-@Bhanu -1068
-3-@Abhishek -1035
-4-@Pranay -999
-5-@Ricky -962
-6-@Prem -926
-7-@Sai Teja -889
-8-@Arjun -852
-9-@Narsi Reddy -815
+Match-16 RCB vs RR
+1-@Vamsi -1011.5
+2-@Prem -904
+3-@Pranay -805.5
+4-@Ricky -803.5
+5-@Bhanu -794
+6-@Krishna -773
+7-@Narsi Reddy -746
+8-@Abhishek -706
+9-@Sai Teja -689.5
+10-@Arjun -663
 
-Match-14 GT vs SRH
-1-@Arjun -1042
-2-@Narsi Reddy -1018
-3-@Sai Teja -986
-4-@Vamsi -950
-5-@Prem -914
-6-@Bhanu -877
-7-@Ricky -840
-8-@Pranay -803
+Match-17 SRH vs PK
+1-@Arjun -974.5
+2-@Ricky -916
+3-@Bhanu -899.5
+4-@Narsi Reddy -839.5
+5-@Pranay -810.5
+6-@Vamsi -750.5
+7-@Prem -694.5
 
-Match-15 DC vs LSG
-1-@Prem -1080
-2-@Abhishek -1055
-3-@Pranay -1022
-4-@Arjun -986
-5-@Sai Teja -950
-6-@Narsi Reddy -913
-7-@Ricky -876
-8-@Bhanu -839
-9-@Vamsi -802
+Match-18 CSK vs DC
+1-@Bhanu -1096
+2-@Pranay -978.5
+3-@Prem -966.5
+4-@Narsi Reddy -930
+5-@Arjun -737
+6-@Vamsi -666.5
+7-@Sai Teja -662.5
+8-@Ricky -658
 
-Match-16 KKR vs CSK
-1-@Sai Teja -1065
-2-@Ricky -1040
-3-@Bhanu -1008
-4-@Arjun -972
-5-@Pranay -936
-6-@Vamsi -900
-7-@Prem -863
+Match-19 LSG vs GT
+1-@Narsi Reddy -918
+2-@Krishna -915.5
+3-@Pranay -883.5
+4-@Bhanu -808
+5-@Ricky -792
+6-@Vamsi -782
+7-@Prem -780
+8-@Sai Teja -776.5
+9-@Arjun -676.5
 
-Match-17 RR vs MI
-1-@Bhanu -1052
-2-@Vamsi -1027
-3-@Narsi Reddy -995
-4-@Sai Teja -959
-5-@Abhishek -923
-6-@Prem -886
-7-@Ricky -849
-8-@Arjun -812
-9-@Pranay -775
+Match-20 RCB vs MI
+1-@Ricky -884.5
+2-@Bhanu -877.5
+3-@Arjun -815
+4-@Prem -792.5
+5-@Krishna -787
+6-@Abhishek -786.5
+7-@Sai Teja -767
+8-@Pranay -727
+9-@Vamsi -682
+10-@Narsi Reddy -651
 
-Match-18 PBKS vs RCB
-1-@Narsi Reddy -1068
-2-@Pranay -1043
-3-@Arjun -1011
-4-@Bhanu -975
-5-@Vamsi -938
-6-@Abhishek -902
-7-@Sai Teja -865
-8-@Prem -828
+Match-21 SRH vs RR
+1-@Vamsi -686
+2-@Narsi Reddy -663.5
+3-@Krishna -614
+4-@Prem -565
+5-@Sai Teja -559.5
+6-@Ricky -534
+7-@Bhanu -524
+8-@Pranay -514
+9-@Arjun -487
+10-@Abhishek -465
 
-Match-19 SRH vs GT
-1-@Abhishek -1082
-2-@Arjun -1058
-3-@Ricky -1025
-4-@Narsi Reddy -988
-5-@Prem -952
-6-@Sai Teja -915
-7-@Bhanu -878
-8-@Vamsi -841
-9-@Pranay -804
+Match-22 CSK vs KKR
+1-@Prem -865
+2-@Narsi Reddy -854
+3-@Arjun -790.5
+4-@Bhanu -787.5
+5-@Pranay -715.5
+6-@Ricky -714
+7-@Vamsi -709
 
-Match-20 LSG vs DC
-1-@Pranay -1048
-2-@Sai Teja -1023
-3-@Vamsi -991
-4-@Ricky -955
-5-@Arjun -919
-6-@Bhanu -882
-7-@Narsi Reddy -845
+Match-23 RCB vs LSG
+1-@Vamsi -817.5
+2-@Pranay -731
+3-@Ricky -719.5
+4-@Sai Teja -706
+5-@Arjun -687.5
+6-@Narsi Reddy -655.5
+7-@Krishna -640.5
+8-@Prem -608
+9-@Abhishek -561
+10-@Bhanu -500
 
-Match-21 KKR vs SRH
-1-@Arjun -1068
-2-@Narsi Reddy -1055
-3-@Abhishek -1020
-4-@Sai Teja -1003
-5-@Ricky -960
-6-@Pranay -923
-7-@Bhanu -885
+Match-24 MI vs PK
+1-@Ricky -962
+2-@Sai Teja -901
+3-@Narsi Reddy -840.5
+4-@Arjun -755.5
+5-@Abhishek -674
+6-@Prem -652
+7-@Pranay -594
+8-@Krishna -587
+9-@Bhanu -505
 
-Match-22 CSK vs RR
-1-@Narsi Reddy -1050
-2-@Vamsi -1035
-3-@Arjun -1009
-4-@Bhanu -977
-5-@Abhishek -930
-6-@Ricky -912
-7-@Prem -890
+Match-25 GT vs KKR
+1-@Vamsi -986
+2-@Narsi Reddy -964
+3-@Arjun -850.5
+4-@Abhishek -821.5
+5-@Bhanu -813.5
+6-@Prem -790
+7-@Ricky -721
+8-@Sai Teja -696.5
+9-@Pranay -685
 
-Match-23 KKR vs RCB
-1-@Ricky -1028
-2-@Narsi Reddy -1014
-3-@Prem -980
-4-@Sai Teja -963
-5-@Arjun -932
-6-@Vamsi -917
-7-@Pranay -888
-8-@Abhishek -871
+Match-26 RCB vs DC
+1-@Narsi Reddy -847.5
+2-@Ricky -799.5
+3-@Bhanu -766.5
+4-@Krishna -748.5
+5-@Prem -715
+6-@Pranay -659
+7-@Vamsi -657.5
+8-@Sai Teja -652
+9-@Arjun -593.5
+10-@Gowtham -529.5
 
-Match-24 GT vs KKR
-1-@Abhishek -1017
-2-@Pranay -999
-3-@Vamsi -983
-4-@Ricky -950
-5-@Arjun -933
-6-@Bhanu -893
-7-@Sai Teja -852
+Match-27 SRH vs CSK
+1-@Sai Teja -1021.5
+2-@Pranay -953.5
+3-@Arjun -906
+4-@Vamsi -801
+5-@Bhanu -799.5
+6-@Prem -745.5
+7-@Krishna -739.5
+8-@Narsi Reddy -739.5
+9-@Ricky -729
 
-Match-25 KKR vs GT
-1-@Prem -1002
-2-@Sai Teja -960
-3-@Narsi Reddy -946
-4-@Arjun -897
-5-@Abhishek -848
-6-@Bhanu -825
-7-@Ricky -795
+Match-28 KKR vs RR
+1-@Prem -848.5
+2-@Bhanu -754
+3-@Vamsi -745
+4-@Krishna -738.5
+5-@Pranay -721.5
+6-@Ricky -718.5
+7-@Arjun -680.5
+8-@Abhishek -669
+9-@Narsi Reddy -645
 
-Match-26 RCB vs KKR
-1-@Ricky -1010
-2-@Bhanu -987
-3-@Vamsi -953
-4-@Narsi Reddy -926
-5-@Sai Teja -889
-6-@Prem -853
+Match-29 PK vs LSG
+1-@Prem -911
+2-@Pranay -908
+3-@Sai Teja -881
+4-@Krishna -845
+5-@Abhishek -832.5
+6-@Arjun -801.5
+7-@Vamsi -794
+8-@Narsi Reddy -772
+9-@Ricky -688
+10-@Bhanu -606.5
 
-Match-27 MI vs GT
-1-@Abhishek -1063
-2-@Vamsi -1051
-3-@Arjun -1030
-4-@Prem -1009
-5-@Sai Teja -964
-6-@Ricky -946
+Match-30 MI vs GT
+1-@Pranay -804
+2-@Abhishek -697
+3-@Narsi Reddy -604.5
+4-@Ricky -589
+5-@Vamsi -576
+6-@Krishna -575.5
+7-@Prem -556
+8-@Arjun -479
+9-@Sai Teja -467.5
+10-@Bhanu -432.5
 
-Match-28 SRH vs RR
-1-@Abhishek -1070
-2-@Pranay -1052
-3-@Ricky -1012
-4-@Prem -977
-5-@Arjun -952
-6-@Narsi Reddy -940
+Match-31 SRH vs DC
+1-@Arjun -1179.5
+2-@Pranay -1161.5
+3-@Vamsi -1034.5
+4-@Ricky -989.5
+5-@Bhanu -962.5
+6-@Sai Teja -924.5
+7-@Narsi Reddy -915.5
+8-@Prem -872.5
+9-@Abhishek -822.5
 
-Match-29 RR vs DC
-1-@Abhishek -1094
-2-@Sai Teja -1070
-3-@Pranay -1042
-4-@Narsi Reddy -1028
-5-@Prem -983
-6-@Vamsi -941
-7-@Ricky -893
-8-@Arjun -849
+Match-32 RR vs LSG
+1-@Vamsi -790.5
+2-@Arjun -756
+3-@Narsi Reddy -751
+4-@Bhanu -737.5
+5-@Prem -720
+6-@Ricky -699
+7-@Sai Teja -557
 
-Match-30 DC vs GT
-1-@Abhishek -1023
-2-@Arjun -984
-3-@Sai Teja -960
-4-@Vamsi -939
-5-@Narsi Reddy -922
-6-@Pranay -912
-7-@Ricky -892
+Match-33 CSK vs MI
+1-@Prem -958
+2-@Bhanu -888
+3-@Pranay -887
+4-@Arjun -834
+5-@Sai Teja -695.5
+6-@Vamsi -684
+7-@Krishna -675
+8-@Narsi Reddy -646
+9-@Ricky -640
 
-Match-31 DC vs CSK
-1-@Ricky -1063
-2-@Bhanu -1037
-3-@Narsi Reddy -996
-4-@Arjun -947
-5-@Vamsi -914
-6-@Sai Teja -885
-7-@Prem -836
-
-Match-32 RR vs DC
-1-@Bhanu -1016
-2-@Narsi Reddy -972
-3-@Ricky -936
-4-@Pranay -890
-5-@Vamsi -860
-6-@Sai Teja -828
-7-@Arjun -806
-8-@Abhishek -782
-
-Match-33 MI vs GT
-1-@Ricky -1056
-2-@Pranay -1036
-3-@Arjun -1024
-4-@Vamsi -993
-5-@Narsi Reddy -961
-6-@Sai Teja -922
-7-@Abhishek -875
-
-Match-34 CSK vs GT
-1-@Prem -1054
-2-@Bhanu -1019
-3-@Arjun -1008
-4-@Sai Teja -990
-5-@Pranay -977
-6-@Narsi Reddy -964
-7-@Vamsi -940
-8-@Abhishek -893
+Match-34 RCB vs GT
+1-@Krishna -890.5
+2-@Vamsi -847.5
+3-@Pranay -837
+4-@Bhanu -830.5
+5-@Prem -814.5
+6-@Narsi Reddy -770
+7-@Arjun -737
+8-@Abhishek -731.5
+9-@Sai Teja -689.5
+10-@Ricky -589
 
 Match-35 RR vs DC
-1-@Vamsi -1000
-2-@Pranay -983
-3-@Sai Teja -956
-4-@Narsi Reddy -915
-5-@Ricky -903
-6-@Prem -884
+1-@Prem -1384.5
+2-@Krishna -1213
+3-@Narsi Reddy -1177
+4-@Arjun -1160
+5-@Pranay -1159
+6-@Vamsi -1085.5
+7-@Ricky -1042
+8-@Sai Teja -970.5
 
-Match-36 MI vs RCB
-1-@Prem -1076
-2-@Pranay -1031
-3-@Ricky -996
-4-@Sai Teja -958
-5-@Vamsi -912
-6-@Bhanu -882
-7-@Arjun -866
-8-@Narsi Reddy -817
+Match-36 SRH vs RR
+1-@Narsi Reddy -1285.5
+2-@Pranay -1247.5
+2-@Sai Teja -1247.5
+3-@Arjun -1221.5
+4-@Prem -1195.5
+5-@Vamsi -1103
+6-@Abhishek -1071
+7-@Ricky -1047
+8-@Bhanu -1022.5
+9-@Krishna -1014
 
-Match-37 PBKS vs SRH
-1-@Narsi Reddy -1062
-2-@Arjun -1033
-3-@Ricky -1013
-4-@Pranay -968
-5-@Sai Teja -942
-6-@Bhanu -921
-7-@Abhishek -885
+Match-37 CSK vs GT
+1-@Narsi Reddy -922.5
+2-@Sai Teja -817.5
+3-@Vamsi -740.5
+3-@Krishna -740.5
+4-@Arjun -736.5
+5-@Pranay -727
+6-@Ricky -688.5
+7-@Prem -632
+8-@Bhanu -509
 
-Match-38 RCB vs DC
-1-@Abhishek -1027
-2-@Arjun -1013
-3-@Pranay -975
-4-@Vamsi -940
-5-@Ricky -900
-6-@Prem -871
-7-@Bhanu -827
+Match-38 LSG vs KKR
+1-@Narsi Reddy -717
+2-@Prem -665
+3-@Abhishek -617
+4-@Arjun -605
+5-@Vamsi -587
+6-@Pranay -529.5
+7-@Sai Teja -529
+8-@Krishna -499
+9-@Bhanu -440
+10-@Ricky -407
 
-Match-39 LSG vs DC
-1-@Pranay -1013
-2-@Arjun -999
-3-@Narsi Reddy -980
-4-@Ricky -932
-5-@Prem -922
-6-@Bhanu -875
-7-@Vamsi -845
-8-@Sai Teja -798
+Match-39 RCB vs DC
+1-@Narsi Reddy -726
+2-@Sai Teja -676.5
+3-@Arjun -634
+4-@Krishna -612
+5-@Pranay -597.5
+6-@Vamsi -561
+7-@Prem -421.5
+8-@Ricky -420.5
+9-@Bhanu -386.5
+10-@Abhishek -291.5
 
-Match-40 RCB vs KKR
-1-@Sai Teja -1000
-2-@Abhishek -967
-3-@Vamsi -922
-4-@Pranay -900
-5-@Narsi Reddy -856
-6-@Prem -840
-7-@Ricky -823
-8-@Bhanu -780
+Match-40 RR vs PK
+1-@Abhishek -897
+2-@Prem -862
+3-@Narsi Reddy -838.5
+4-@Krishna -831.5
+5-@Ricky -809.5
+6-@Arjun -788.5
+7-@Sai Teja -775.5
+8-@Pranay -732.5
+9-@Bhanu -716.5
 
-Match-41 KKR vs LSG
-1-@Pranay -1059
-2-@Abhishek -1019
-3-@Ricky -1002
-4-@Narsi Reddy -991
-5-@Vamsi -960
-6-@Arjun -918
-7-@Prem -903
+Match-41 SRH vs MI
+1-@Bhanu -1247.5
+2-@Arjun -1234.5
+3-@Prem -1127
+4-@Sai Teja -1126.5
+5-@Pranay -1014.5
+6-@Narsi Reddy -1000.5
+7-@Ricky -652
+8-@Vamsi -601
 
-Match-42 MI vs CSK
-1-@Arjun -1022
-2-@Abhishek -983
-3-@Sai Teja -953
-4-@Prem -929
-5-@Vamsi -912
-6-@Bhanu -880
+Match-42 RCB vs GT
+1-@Prem -884.5
+2-@Krishna -862.5
+3-@Bhanu -812
+4-@Narsi Reddy -804
+5-@Abhishek -783.5
+5-@Sai Teja -783.5
+6-@Ricky -752
+7-@Pranay -736.5
+8-@Arjun -652.5
 
-Match-43 RR vs PBKS
-1-@Narsi Reddy -1024
-2-@Abhishek -986
-3-@Arjun -974
-4-@Vamsi -953
-5-@Sai Teja -938
-6-@Prem -895
+Match-43 RR vs DC
+1-@Abhishek -902.5
+2-@Narsi Reddy -850.5
+3-@Bhanu -821
+4-@Pranay -784.5
+5-@Krishna -752
+6-@Prem -740.5
+7-@Sai Teja -703
+8-@Arjun -674
+9-@Ricky -669.5
+10-@Vamsi -516.5
 
-Match-44 LSG vs DC
-1-@Abhishek -1060
-2-@Bhanu -1023
-3-@Sai Teja -1004
-4-@Pranay -975
-5-@Prem -950
-6-@Ricky -925
-7-@Vamsi -895
-8-@Arjun -846
+Match-44 CSK vs MI
+1-@Narsi Reddy -729.5
+2-@Krishna -712.5
+3-@Bhanu -704.5
+4-@Pranay -685.5
+5-@Sai Teja -628.5
+6-@Prem -611.5
+7-@Arjun -566.5
+8-@Ricky -552.5
 
-Match-45 RR vs LSG
-1-@Narsi Reddy -1035
-2-@Arjun -1005
-3-@Vamsi -977
-4-@Prem -959
-5-@Pranay -931
-6-@Ricky -895
-7-@Sai Teja -852
+Match-45 SRH vs KKR
+1-@Bhanu -938.5
+2-@Arjun -906.5
+3-@Narsi Reddy -862.5
+4-@Ricky -853.5
+5-@Prem -839.5
+6-@Pranay -806.5
+7-@Krishna -774.5
+8-@Vamsi -771.5
+9-@Sai Teja -733
 
-Match-46 SRH vs RCB
-1-@Ricky -1080
-2-@Pranay -1048
-3-@Prem -1029
-4-@Bhanu -997
-5-@Narsi Reddy -950
-6-@Sai Teja -911
-7-@Abhishek -882
+Match-46 GT vs PK
+1-@Arjun -754.5
+2-@Prem -666.5
+3-@Narsi Reddy -656
+4-@Sai Teja -623.5
+5-@Bhanu -602
+6-@Krishna -601
+7-@Vamsi -564.5
+8-@Pranay -561.5
+9-@Ricky -542.5
 
-Match-47 MI vs GT
-1-@Sai Teja -1005
-2-@Pranay -969
-3-@Prem -948
+Match-47 MI vs LSG
+1-@Abhishek -963.5
+1-@Prem -963.5
+2-@Pranay -940
+3-@Bhanu -928.5
 4-@Arjun -919
-5-@Abhishek -883
-6-@Vamsi -838
+5-@Ricky -877
+6-@Narsi Reddy -870
+7-@Sai Teja -494.5
 
-Match-48 GT vs RR
-1-@Narsi Reddy -1059
-2-@Sai Teja -1028
-3-@Prem -998
-4-@Pranay -963
-5-@Bhanu -917
-6-@Ricky -868
-7-@Abhishek -854
-8-@Arjun -826
+Match-48 CSK vs DC
+1-@Bhanu -778
+2-@Prem -773.5
+3-@Ricky -765.5
+4-@Narsi Reddy -696.5
+5-@Arjun -629
+6-@Pranay -601.5
+7-@Sai Teja -584.5
+8-@Krishna -518.5
 
-Match-49 RCB vs SRH
-1-@Prem -1018
-2-@Bhanu -969
-3-@Vamsi -951
-4-@Narsi Reddy -919
-5-@Sai Teja -905
-6-@Abhishek -883
-7-@Pranay -841
-8-@Ricky -804
+Match-49 SRH vs PK
+1-@Sai Teja -1080.5
+2-@Krishna -1009.5
+3-@Ricky -981.5
+4-@Prem -952.5
+5-@Pranay -939.5
+5-@Arjun -939.5
+6-@Narsi Reddy -904
+7-@Abhishek -897.5
+8-@Vamsi -890.5
+9-@Bhanu -722
 
-Match-50 KKR vs PBKS
-1-@Vamsi -1057
-2-@Pranay -1009
-3-@Prem -977
-4-@Arjun -956
-5-@Bhanu -909
-6-@Sai Teja -860
-7-@Abhishek -822
-8-@Narsi Reddy -789
+Match-50 RCB vs LSG 
+1-@Bhanu -952
+2-@Abhishek -937.5
+3-@Sai Teja -860.5
+4-@Ricky -849.5
+5-@Prem -824.5
+6-@Vamsi -812
+7-@Krishna -760
+8-@Pranay -699
+9-@Narsi Reddy -628
+10-@Arjun -477
 
-Match-51 MI vs PBKS
-1-@Prem -1076
-2-@Narsi Reddy -1033
-3-@Bhanu -994
-4-@Abhishek -946
-5-@Pranay -900
-6-@Ricky -865
-7-@Vamsi -845
+Match-51 DC vs KKR
+1-@Vamsi -895.5
+2-@Bhanu -830
+3-@Abhishek -782.5
+4-@Prem -654.5
+5-@Pranay -573.5
+6-@Arjun -555.5
+7-@Sai Teja -549
+8-@Ricky -535.5
+9-@Narsi Reddy -496
 
-Match-52 SRH vs GT
-1-@Pranay -1003
-2-@Narsi Reddy -979
-3-@Sai Teja -966
-4-@Bhanu -927
-5-@Arjun -899
-6-@Prem -884
-7-@Ricky -868
-8-@Vamsi -839
-
+Match-52 RR vs GT
+1-@Abhishek -978
+2-@Pranay -964
+3-@Ricky -961
+4-@Bhanu -958.5
+5-@Vamsi -915
+6-@Sai Teja -892.5
+7-@Prem -869
+8-@Arjun -843.5
+9-@Narsi Reddy -785.5
 `
