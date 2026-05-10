@@ -529,4 +529,15 @@ Match-52 RR vs GT
 7-@Prem -869
 8-@Arjun -843.5
 9-@Narsi Reddy -785.5
+
+Match-53 CSK vs LSG
+1-@Arjun -1007
+2-@⁨Prem⁩ -777.5
+3-@⁨Bhanu⁩ -761
+4-@⁨Vamsi⁩ -646
+5-@⁨Ricky⁩ -628.5
+6-@⁨Narsi Reddy⁩ -597
+7-@⁨Pranay⁩ -595
+8-@⁨Sai Teja⁩ -558.5
+9-@⁨Krishna⁩ -492
 `
