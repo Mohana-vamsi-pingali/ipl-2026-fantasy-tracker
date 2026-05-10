@@ -540,4 +540,16 @@ Match-53 CSK vs LSG
 7-@Pranay -595
 8-@Sai Teja -558.5
 9-@Krishna -492
+
+Match-54 RCB vs MI
+1-@Prem -812
+2-@Ricky -803
+3-@Sai Teja -769
+4-@Krishna -713
+5-@Narsi Reddy -670
+6-@Arjun -629
+7-@Vamsi -600
+8-@Pranay -586
+9-@Abhishek -567
+10-@Bhanu -508
 `
