@@ -552,4 +552,16 @@ Match-54 RCB vs MI
 8-@Pranay -586
 9-@Abhishek -567
 10-@Bhanu -508
+
+Match- 55 PK vs DC
+1-@Arjun -860.5
+2-@Abhishek -852.5
+3-@Vamsi -842.5
+4-@Sai Teja -779
+5-@Narsi Reddy -751
+6-@Pranay -726.5
+7-@Ricky -693
+8-@Bhanu -689.5
+9-@Krishna -663
+10-@Prem -629
 `
