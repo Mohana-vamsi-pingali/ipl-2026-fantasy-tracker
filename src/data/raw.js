@@ -559,8 +559,8 @@ Match-55 PK vs DC
 3-@Vamsi -842.5
 4-@Sai Teja -779
 5-@Narsi Reddy -751
-6-Pranay@ -726.5
-7-Ricky@ -693
+6-@Pranay -726.5
+7-@Ricky -693
 8-@Bhanu -689.5
 9-@Krishna -663
 10-@Prem -629
