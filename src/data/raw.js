@@ -571,7 +571,6 @@ Match-56 SRH vs GT
 3-@Narsi Reddy -714.5
 4-@Pranay -653.5
 5-@Prem -637.5
-@Narsi Reddy -751
 6-@Krishna -629.5
 7-@Sai Teja -607.5
 8-@Ricky -589
