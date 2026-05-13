@@ -576,4 +576,15 @@ Match-56 SRH vs GT
 8-@Ricky -589
 9-@Vamsi -580
 10-@Abhishek -493.5
+
+Match-57 RCB vs KKR
+1-@Pranay -973.5
+2-@Vamsi -931.5
+3-@Bhanu -914
+4-@Krishna -911.5
+5-@Prem -906
+6-@Narsi Reddy -896.5
+7-@Ricky -836
+8-@Arjun -794.5
+9-@Sai Teja -699.5
 `
