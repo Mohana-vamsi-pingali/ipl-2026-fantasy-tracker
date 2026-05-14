@@ -587,4 +587,15 @@ Match-57 RCB vs KKR
 7-@Ricky -836
 8-@Arjun -794.5
 9-@Sai Teja -699.5
+
+Match-58 PK vs MI
+1-@Arjun -878
+2-@Pranay -870
+3-@Bhanu -863.5
+4-@Ricky -804.5
+5-@Prem -799
+6-@Abhishek -734
+7-@Narsi Reddy -680.5
+8-@Sai Teja -633.5
+9-@Vamsi -490
 `
