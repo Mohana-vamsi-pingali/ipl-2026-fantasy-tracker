@@ -598,4 +598,12 @@ Match-58 PK vs MI
 7-@Narsi Reddy -680.5
 8-@Sai Teja -633.5
 9-@Vamsi -490
+
+Match-58 PK vs MI
+1-@Narsi Reddy -710
+2-@Sai Teja -708
+2-@Pranay -708
+3-@Prem -667
+4-@Arjun -665
+5-@Bhanu -573
 `
