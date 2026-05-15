@@ -599,7 +599,7 @@ Match-58 PK vs MI
 8-@Sai Teja -633.5
 9-@Vamsi -490
 
-Match-58 PK vs MI
+Match-59 CSK vs LSG
 1-@Narsi Reddy -710
 2-@Sai Teja -708
 2-@Pranay -708
