@@ -70,6 +70,7 @@ export function getAllPlayerStats() {
     const bestScore = scores.length > 0 ? Math.max(...scores) : 0
     const worstScore = scores.length > 0 ? Math.min(...scores) : 0
     const skips = matches.length - gamesPlayed
+    const bestTop3Streak = getBestTop3Streaks(player)[0]?.length || 0
 
     return {
       player,
@@ -83,8 +84,103 @@ export function getAllPlayerStats() {
       bestScore,
       worstScore,
       skips,
+      bestTop3Streak,
     }
   })
+}
+
+// ---------------------------------------------------------------------------
+// getBestTop3Streaks(playerName)
+// ---------------------------------------------------------------------------
+
+export function getBestTop3Streaks(playerName) {
+  const playerMatches = []
+  for (const match of matches) {
+    const result = match.results.find((r) => r.player === playerName)
+    if (result) {
+      playerMatches.push({
+        matchNumber: match.matchNumber,
+        teams: match.teams,
+        rank: result.rank,
+        score: result.score,
+      })
+    }
+  }
+
+  const streaks = []
+  let currentStreakMatches = []
+
+  for (const pm of playerMatches) {
+    if (pm.rank <= 3) {
+      currentStreakMatches.push(pm)
+    } else {
+      if (currentStreakMatches.length > 0) {
+        streaks.push({
+          length: currentStreakMatches.length,
+          matches: [...currentStreakMatches],
+        })
+        currentStreakMatches = []
+      }
+    }
+  }
+  if (currentStreakMatches.length > 0) {
+    streaks.push({
+      length: currentStreakMatches.length,
+      matches: [...currentStreakMatches],
+    })
+  }
+
+  return streaks.sort((a, b) => b.length - a.length)
+}
+
+// ---------------------------------------------------------------------------
+// getAllTop3Streaks()
+// ---------------------------------------------------------------------------
+
+export function getAllTop3Streaks() {
+  const allStreaks = []
+  
+  // Only consider the top streak per player or all streaks?
+  // "Wait, example shows tied players... If a player has a 9-streak and a 7-streak, 
+  // do we show their 7-streak again?"
+  // "returns the top 3 longest streaks across ALL players"
+  // Let's only use the BEST streak per player to avoid duplicates.
+  for (const player of allPlayers) {
+    const pStreaks = getBestTop3Streaks(player)
+    if (pStreaks.length > 0) {
+      const bestStreak = pStreaks[0]
+      allStreaks.push({
+        player,
+        length: bestStreak.length,
+        matches: bestStreak.matches,
+      })
+    }
+  }
+
+  allStreaks.sort((a, b) => b.length - a.length)
+
+  const rankedStreaks = []
+  let currentRank = 1
+  let currentLength = -1
+  let lengthsSeen = 0
+
+  for (const st of allStreaks) {
+    if (st.length !== currentLength) {
+      lengthsSeen++
+      if (lengthsSeen > 5) break
+      currentLength = st.length
+      currentRank = lengthsSeen
+    }
+    
+    rankedStreaks.push({
+      rank: currentRank,
+      length: st.length,
+      player: st.player,
+      matches: st.matches,
+    })
+  }
+
+  return rankedStreaks
 }
 
 // ---------------------------------------------------------------------------
