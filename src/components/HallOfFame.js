@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks } from '@/lib/stats'
+import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks, getAllTop3Streaks } from '@/lib/stats'
 
 // ── Record definitions ──────────────────────────────────────────────────────
 
@@ -69,27 +69,32 @@ function computeRecords(allStats) {
     mostConsistent = withStdDev.filter(s => s.consistencyScore === minStdDev)
   }
 
-  return { 
-    highestTotalPoints, 
-    mostWins, 
+  // 7. Most Consecutive Top 3s
+  const maxTop3Streak = Math.max(...allStats.map(s => s.bestTop3Streak || 0))
+  const mostConsecutiveTop3 = allStats.filter(s => s.bestTop3Streak === maxTop3Streak && maxTop3Streak > 0)
+
+  return {
+    highestTotalPoints,
+    mostWins,
     mostTop3,
-    highestScoreEntries: { score: maxScore, players: uniqueHighestScorePlayers, subtitle: highestScoreEntries.length === 1 ? `Match ${highestScoreEntries[0].matchNumber} · ${highestScoreEntries[0].teams}` : 'Multiple matches' }, 
-    bestStreakEntries, 
-    mostGames, 
-    mostSkips, 
-    mostConsistent 
+    highestScoreEntries: { score: maxScore, players: uniqueHighestScorePlayers, subtitle: highestScoreEntries.length === 1 ? `Match ${highestScoreEntries[0].matchNumber} · ${highestScoreEntries[0].teams}` : 'Multiple matches' },
+    bestStreakEntries,
+    mostGames,
+    mostSkips,
+    mostConsistent,
+    mostConsecutiveTop3
   }
 }
 
 // ── Individual Hall of Fame card ────────────────────────────────────────────
 
 const CARD_THEMES = [
-  { bg: 'from-yellow-500/10 to-yellow-900/5', border: 'border-yellow-500/30', accent: '#FFD700',   glow: 'rgba(255,215,0,0.12)'   },
-  { bg: 'from-blue-500/10  to-blue-900/5',   border: 'border-blue-400/30',   accent: '#00D4FF',   glow: 'rgba(0,212,255,0.12)'   },
-  { bg: 'from-red-500/10   to-red-900/5',    border: 'border-red-400/30',    accent: '#FF6B6B',   glow: 'rgba(255,107,107,0.12)' },
-  { bg: 'from-green-500/10 to-green-900/5',  border: 'border-green-400/30',  accent: '#2ECC71',   glow: 'rgba(46,204,113,0.12)'  },
-  { bg: 'from-purple-500/10 to-purple-900/5',border: 'border-purple-400/30', accent: '#B07FD4',   glow: 'rgba(155,89,182,0.12)'  },
-  { bg: 'from-teal-500/10  to-teal-900/5',   border: 'border-teal-400/30',   accent: '#1ABC9C',   glow: 'rgba(26,188,156,0.12)'  },
+  { bg: 'from-yellow-500/10 to-yellow-900/5', border: 'border-yellow-500/30', accent: '#FFD700', glow: 'rgba(255,215,0,0.12)' },
+  { bg: 'from-blue-500/10  to-blue-900/5', border: 'border-blue-400/30', accent: '#00D4FF', glow: 'rgba(0,212,255,0.12)' },
+  { bg: 'from-red-500/10   to-red-900/5', border: 'border-red-400/30', accent: '#FF6B6B', glow: 'rgba(255,107,107,0.12)' },
+  { bg: 'from-green-500/10 to-green-900/5', border: 'border-green-400/30', accent: '#2ECC71', glow: 'rgba(46,204,113,0.12)' },
+  { bg: 'from-purple-500/10 to-purple-900/5', border: 'border-purple-400/30', accent: '#B07FD4', glow: 'rgba(155,89,182,0.12)' },
+  { bg: 'from-teal-500/10  to-teal-900/5', border: 'border-teal-400/30', accent: '#1ABC9C', glow: 'rgba(26,188,156,0.12)' },
 ]
 
 function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, onClick }) {
@@ -145,7 +150,7 @@ function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, o
 
 export default function HallOfFame() {
   const [activeModal, setActiveModal] = useState(null)
-  
+
   useEffect(() => {
     if (activeModal) {
       document.body.style.overflow = 'hidden'
@@ -156,9 +161,9 @@ export default function HallOfFame() {
       document.body.style.overflow = 'unset'
     }
   }, [activeModal])
-  
+
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent } =
+  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent, mostConsecutiveTop3 } =
     computeRecords(allStats)
 
   const cards = [
@@ -211,6 +216,14 @@ export default function HallOfFame() {
       subtitle: mostGames.length === 1 ? `${mostGames[0].skips} skips` : 'Multiple players',
     },
     {
+      id: 'longest-top3-streak',
+      emoji: '🔝',
+      title: 'Most Consecutive Top 3s',
+      statValue: mostConsecutiveTop3.length > 0 ? `${mostConsecutiveTop3[0].bestTop3Streak} matches` : '0 matches',
+      players: mostConsecutiveTop3.map(p => p.player),
+      subtitle: 'Skips not counted',
+    },
+    {
       id: 'most-skips',
       emoji: '💀',
       title: 'Most Skips',
@@ -255,7 +268,7 @@ export default function HallOfFame() {
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.totalPoints.toLocaleString()}</td>
           </tr>
         ))
-    } 
+    }
     else if (activeModal === 'most-wins') {
       modalTitle = "Most Wins"
       modalDesc = "Total times placing 1st in a match"
@@ -319,10 +332,10 @@ export default function HallOfFame() {
     }
     else if (activeModal === 'longest-streak') {
       modalTitle = "Longest Win Streaks"
-      modalDesc = "Win streaks by length (Highest to Highest-2)"
+      modalDesc = "Win streaks by length (Highest to Highest-4)"
       const allStreaks = getAllWinStreaks()
       const maxStreak = allStreaks.length > 0 ? allStreaks[0].streak : 0
-      const filteredStreaks = allStreaks.filter(s => s.streak >= maxStreak - 2 && s.streak > 1)
+      const filteredStreaks = allStreaks.filter(s => s.streak >= maxStreak - 4 && s.streak > 1)
       tableHeader = (
         <tr>
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Streak</th>
@@ -402,15 +415,36 @@ export default function HallOfFame() {
         </tr>
       ))
     }
+    else if (activeModal === 'longest-top3-streak') {
+      modalTitle = "Most Consecutive Top 3 Finishes"
+      modalDesc = "Skips are not counted. Tied ranks handled correctly."
+      const top3Streaks = getAllTop3Streaks()
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Streak Length</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Matches</th>
+        </tr>
+      )
+      tableBody = top3Streaks.map((s, idx) => (
+        <tr key={`${s.player}-${s.length}-${idx}`} className="hover:bg-white/5 transition-colors">
+          <td className="px-6 py-3 text-sm text-gray-400">{s.rank}</td>
+          <td className="px-6 py-3 text-sm font-bold text-white">{s.player}</td>
+          <td className="px-6 py-3 text-sm font-black text-yellow-400">{s.length} matches</td>
+          <td className="px-6 py-3 text-xs text-gray-400">Match {s.matches.map(m => m.matchNumber).join(', ')}</td>
+        </tr>
+      ))
+    }
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
-        <div 
+        <div
           className="bg-[#0a0f1c] border border-white/10 rounded-2xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl relative"
           onClick={e => e.stopPropagation()}
         >
           {/* Close button */}
-          <button 
+          <button
             className="absolute top-4 right-4 text-gray-400 hover:text-white"
             onClick={() => setActiveModal(null)}
           >
@@ -433,6 +467,11 @@ export default function HallOfFame() {
                 {tableBody}
               </tbody>
             </table>
+            {activeModal === 'longest-top3-streak' && (
+              <div className="p-4 text-xs text-gray-500 text-center border-t border-white/10">
+                Only played matches counted toward streaks
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -459,9 +498,9 @@ export default function HallOfFame() {
       <div className="flex flex-wrap justify-center gap-4">
         {cards.map((card, i) => (
           <div key={card.title} className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.67rem)] lg:w-[calc(25%-0.75rem)]">
-            <HofCard 
-              {...card} 
-              themeIndex={i} 
+            <HofCard
+              {...card}
+              themeIndex={i}
               onClick={() => setActiveModal(card.id)}
             />
           </div>
