@@ -606,4 +606,15 @@ Match-59 CSK vs LSG
 3-@Prem -667
 4-@Arjun -665
 5-@Bhanu -573
+
+Match-60 GT vs KKR
+1-@Sai Teja - 1316.5
+2-@Pranay -1254.5
+3-@Arjun -1247.5
+4-@Prem -1229.5
+5-@Bhanu -1177.5
+6-@Narsi Reddy -1155.5
+7-@Ricky -1151
+8-@Vamsi -1138.5
+9-@Krishna -1069
 `
