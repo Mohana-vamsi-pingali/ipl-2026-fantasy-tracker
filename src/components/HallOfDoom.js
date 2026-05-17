@@ -22,7 +22,7 @@ function DoomCard({ id, emoji, title, statValue, players, subtitle, color = '#FF
   return (
     <div
       onClick={onClick}
-      className={`relative flex flex-col items-center text-center rounded-2xl p-6 border bg-gradient-to-b from-red-500/10 to-red-900/5 transition-transform duration-200 ${isClickable ? 'cursor-pointer hover:scale-[1.02]' : 'hover:-translate-y-1'}`}
+      className={`relative h-full flex flex-col items-center text-center rounded-2xl p-6 border bg-gradient-to-b from-red-500/10 to-red-900/5 transition-transform duration-200 ${isClickable ? 'cursor-pointer hover:scale-[1.02]' : 'hover:-translate-y-1'}`}
       style={{
         borderColor: `rgba(${rgb}, 0.3)`,
         boxShadow: `0 0 24px rgba(${rgb}, 0.15), 0 4px 16px rgba(0,0,0,0.4)`
@@ -794,7 +794,7 @@ export default function HallOfDoom() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
         <div
-          className="bg-[#0a0f1c] border border-red-500/30 rounded-2xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-[0_0_40px_rgba(255,68,68,0.15)] relative"
+          className="bg-[#0a0f1c] border border-red-500/30 rounded-2xl w-full max-w-lg h-[80vh] flex flex-col shadow-[0_0_40px_rgba(255,68,68,0.15)] relative"
           onClick={e => e.stopPropagation()}
         >
           {/* Close button */}
@@ -812,7 +812,7 @@ export default function HallOfDoom() {
             <p className="text-sm text-gray-400 mt-1">{modalDesc}</p>
           </div>
 
-          <div className="p-0 overflow-y-auto custom-scrollbar">
+          <div className="flex-1 p-0 overflow-y-auto custom-scrollbar">
             <table className="w-full text-left border-collapse">
               <thead className="bg-[#0a0f1c] sticky top-0 z-10">
                 {tableHeader}

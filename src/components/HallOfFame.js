@@ -99,7 +99,7 @@ function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, o
   return (
     <div
       onClick={onClick}
-      className={`relative flex flex-col items-center text-center rounded-2xl p-6 border ${theme.border} bg-gradient-to-b ${theme.bg} transition-transform duration-200 ${isClickable ? 'cursor-pointer hover:scale-[1.02]' : 'hover:-translate-y-1'}`}
+      className={`relative h-full flex flex-col items-center text-center rounded-2xl p-6 border ${theme.border} bg-gradient-to-b ${theme.bg} transition-transform duration-200 ${isClickable ? 'cursor-pointer hover:scale-[1.02]' : 'hover:-translate-y-1'}`}
       style={{ boxShadow: `0 0 24px ${theme.glow}, 0 4px 16px rgba(0,0,0,0.4)` }}
     >
       {/* Coloured top accent line */}
@@ -446,7 +446,7 @@ export default function HallOfFame() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setActiveModal(null)}>
         <div
-          className="bg-[#0a0f1c] border border-white/10 rounded-2xl w-full max-w-lg max-h-[80vh] flex flex-col shadow-2xl relative"
+          className="bg-[#0a0f1c] border border-white/10 rounded-2xl w-full max-w-lg h-[80vh] flex flex-col shadow-2xl relative"
           onClick={e => e.stopPropagation()}
         >
           {/* Close button */}
@@ -464,7 +464,7 @@ export default function HallOfFame() {
             <p className="text-sm text-gray-400 mt-1">{modalDesc}</p>
           </div>
 
-          <div className="p-0 overflow-y-auto custom-scrollbar">
+          <div className="flex-1 p-0 overflow-y-auto custom-scrollbar">
             <table className="w-full text-left border-collapse">
               <thead className="bg-[#0a0f1c] sticky top-0 z-10">
                 {tableHeader}
