@@ -616,4 +616,27 @@ Match-60 GT vs KKR
 7-@Ricky -1151
 8-@Vamsi -1138.5
 9-@Krishna -1069
+
+Match-61 PK vs RCB
+1-@Sai Teja -871
+2-@Narsi Reddy -816
+3-@Krishna -764
+4-Arjun -717
+5-@Pranay -692
+6-@Prem -646
+7-@Abhishek -634.5
+8-@Bhanu -605
+9-@Vamsi -492
+
+Match-62 DC vs RR
+1-@Narsi Reddy-1024
+2-@Ricky -991
+3-@Pranay -952
+4-@Abhishek -927
+5-@Arjun -919
+6-@Sai Teja -906
+7-@Bhanu -896
+8-@Vamsi -874
+9-@Krishna -872.5
+10-@Prem -801
 `
