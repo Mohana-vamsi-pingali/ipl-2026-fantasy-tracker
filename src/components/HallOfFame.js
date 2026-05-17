@@ -259,11 +259,16 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Points</th>
         </tr>
       )
-      tableBody = [...allStats]
-        .sort((a, b) => b.totalPoints - a.totalPoints)
-        .map((stat, idx) => (
+      const sortedStats = [...allStats].sort((a, b) => b.totalPoints - a.totalPoints)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat, idx) => {
+        if (stat.totalPoints !== lastVal) { currentRank++; lastVal = stat.totalPoints }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
           <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.totalPoints.toLocaleString()}</td>
           </tr>
@@ -279,11 +284,16 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Wins</th>
         </tr>
       )
-      tableBody = [...allStats]
-        .sort((a, b) => b.wins - a.wins)
-        .map((stat, idx) => (
+      const sortedStats = [...allStats].sort((a, b) => b.wins - a.wins)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat, idx) => {
+        if (stat.wins !== lastVal) { currentRank++; lastVal = stat.wins }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
           <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.wins}</td>
           </tr>
@@ -299,11 +309,16 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Top 3s</th>
         </tr>
       )
-      tableBody = [...allStats]
-        .sort((a, b) => b.top3 - a.top3)
-        .map((stat, idx) => (
+      const sortedStats = [...allStats].sort((a, b) => b.top3 - a.top3)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat, idx) => {
+        if (stat.top3 !== lastVal) { currentRank++; lastVal = stat.top3 }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
           <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.top3}</td>
           </tr>
@@ -313,6 +328,17 @@ export default function HallOfFame() {
       modalTitle = "Highest Scores"
       modalDesc = "Top 19 highest individual match scores across the season"
       const topScores = getTopScores(19)
+
+      let currentRank = 0
+      let lastScore = null
+      const rankedScores = topScores.map((scoreInfo, idx) => {
+        if (scoreInfo.score !== lastScore) {
+          currentRank++
+          lastScore = scoreInfo.score
+        }
+        return { ...scoreInfo, rank: currentRank }
+      })
+
       tableHeader = (
         <tr>
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
@@ -321,9 +347,9 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Score</th>
         </tr>
       )
-      tableBody = topScores.map((scoreInfo, idx) => (
+      tableBody = rankedScores.map((scoreInfo, idx) => (
         <tr key={`${scoreInfo.player}-${scoreInfo.matchNumber}`} className="hover:bg-white/5 transition-colors">
-          <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+          <td className="px-6 py-3 text-sm text-gray-400">{scoreInfo.rank}</td>
           <td className="px-6 py-3 text-sm font-bold text-white">{scoreInfo.player}</td>
           <td className="px-6 py-3 text-sm text-gray-400">Match {scoreInfo.matchNumber}</td>
           <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{scoreInfo.score.toLocaleString()}</td>
@@ -361,11 +387,16 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Games</th>
         </tr>
       )
-      tableBody = [...allStats]
-        .sort((a, b) => b.gamesPlayed - a.gamesPlayed)
-        .map((stat, idx) => (
+      const sortedStats = [...allStats].sort((a, b) => b.gamesPlayed - a.gamesPlayed)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat, idx) => {
+        if (stat.gamesPlayed !== lastVal) { currentRank++; lastVal = stat.gamesPlayed }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
           <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.gamesPlayed}</td>
           </tr>
@@ -381,11 +412,16 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Skips</th>
         </tr>
       )
-      tableBody = [...allStats]
-        .sort((a, b) => b.skips - a.skips)
-        .map((stat, idx) => (
+      const sortedStats = [...allStats].sort((a, b) => b.skips - a.skips)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat, idx) => {
+        if (stat.skips !== lastVal) { currentRank++; lastVal = stat.skips }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
           <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.skips}</td>
           </tr>
@@ -407,9 +443,15 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Std Dev</th>
         </tr>
       )
-      tableBody = withStdDev.map((stat, idx) => (
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = withStdDev.map((stat, idx) => {
+        if (stat.consistencyScore !== lastVal) { currentRank++; lastVal = stat.consistencyScore }
+        return { ...stat, rank: currentRank }
+      })
+      tableBody = rankedStats.map((stat, idx) => (
         <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-          <td className="px-6 py-3 text-sm text-gray-400">{idx + 1}</td>
+          <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
           <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
           <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">±{stat.consistencyScore}</td>
         </tr>
