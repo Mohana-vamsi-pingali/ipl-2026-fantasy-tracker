@@ -621,7 +621,7 @@ Match-61 PK vs RCB
 1-@Sai Teja -871
 2-@Narsi Reddy -816
 3-@Krishna -764
-4-Arjun -717
+4-@Arjun -717
 5-@Pranay -692
 6-@Prem -646
 7-@Abhishek -634.5
