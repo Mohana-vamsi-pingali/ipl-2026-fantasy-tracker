@@ -43,7 +43,7 @@ Match-7 CSK vs PK
 1-@Arjun -799.5
 2-@Pranay -795.5
 3-@Ricky -779.5
-4-@Narsi -771
+4-@Narsi Reddy -771
 5-@Prem -661
 6-@Bhanu -657
 7-@Sai Teja -645
@@ -240,7 +240,6 @@ Match-26 RCB vs DC
 7-@Vamsi -657.5
 8-@Sai Teja -652
 9-@Arjun -593.5
-10-@Gowtham -529.5
 
 Match-27 SRH vs CSK
 1-@Sai Teja -1021.5

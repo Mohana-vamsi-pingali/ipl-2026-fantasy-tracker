@@ -1,6 +1,7 @@
 import { getAllPlayerStats } from '@/lib/stats'
 import HomePageClient from '@/components/HomePageClient'
 import HallOfFame from '@/components/HallOfFame'
+import HallOfDoom from '@/components/HallOfDoom'
 import Podiums from '@/components/Podiums'
 
 export const metadata = {
@@ -54,6 +55,9 @@ export default function HomePage() {
 
       {/* Hall of Fame */}
       <HallOfFame />
+
+      {/* Hall of Doom */}
+      <HallOfDoom />
     </div>
   )
 }

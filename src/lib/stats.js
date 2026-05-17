@@ -51,6 +51,10 @@ function calcStreaks(playerName) {
 // ---------------------------------------------------------------------------
 
 export function getAllPlayerStats() {
+  const allLastPlace = getLastPlaceStats()
+  const allSilverMedals = getSilverMedalStats()
+  const allBelowAvg = getBelowAverageStats()
+
   return allPlayers.map((player) => {
     const entries = []
 
@@ -71,6 +75,10 @@ export function getAllPlayerStats() {
     const worstScore = scores.length > 0 ? Math.min(...scores) : 0
     const skips = matches.length - gamesPlayed
     const bestTop3Streak = getBestTop3Streaks(player)[0]?.length || 0
+    const lastPlaceCount = allLastPlace.find(s => s.player === player)?.lastPlaceCount || 0
+    const silverMedals = allSilverMedals.find(s => s.player === player)?.silverCount || 0
+    const belowAvgCount = allBelowAvg.find(s => s.player === player)?.belowAvgCount || 0
+    const stdDevScore = stdDev(scores)
 
     return {
       player,
@@ -85,6 +93,10 @@ export function getAllPlayerStats() {
       worstScore,
       skips,
       bestTop3Streak,
+      lastPlaceCount,
+      silverMedals,
+      belowAvgCount,
+      stdDev: stdDevScore,
     }
   })
 }
@@ -139,7 +151,7 @@ export function getBestTop3Streaks(playerName) {
 
 export function getAllTop3Streaks() {
   const allStreaks = []
-  
+
   // Only consider the top streak per player or all streaks?
   // "Wait, example shows tied players... If a player has a 9-streak and a 7-streak, 
   // do we show their 7-streak again?"
@@ -171,7 +183,7 @@ export function getAllTop3Streaks() {
       currentLength = st.length
       currentRank = lengthsSeen
     }
-    
+
     rankedStreaks.push({
       rank: currentRank,
       length: st.length,
@@ -324,15 +336,15 @@ export function getTopScores(limit = 19) {
 
 export function getAllWinStreaks() {
   const allStreaks = []
-  
+
   for (const player of allPlayers) {
     let currentStreakCount = 0
     let currentStreakMatches = []
-    
+
     for (const match of matches) {
       const result = match.results.find((r) => r.player === player)
       if (!result) continue // Skipped match doesn't break streak
-      
+
       if (result.rank === 1) {
         currentStreakCount++
         currentStreakMatches.push(match.matchNumber)
@@ -348,7 +360,327 @@ export function getAllWinStreaks() {
       allStreaks.push({ player, streak: currentStreakCount, matches: [...currentStreakMatches] })
     }
   }
-  
+
   // Sort descending by streak length
   return allStreaks.sort((a, b) => b.streak - a.streak)
+}
+
+// ---------------------------------------------------------------------------
+// getLastPlaceStats()
+// ---------------------------------------------------------------------------
+
+export function getLastPlaceStats() {
+  const statsMap = {}
+  for (const player of allPlayers) {
+    statsMap[player] = { player, lastPlaceCount: 0, matches: [] }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    // Highest rank number is last place
+    const maxRank = Math.max(...match.results.map(r => r.rank))
+
+    // Find all players with this rank
+    const lastPlaceResults = match.results.filter(r => r.rank === maxRank)
+
+    for (const res of lastPlaceResults) {
+      if (!statsMap[res.player]) {
+        statsMap[res.player] = { player: res.player, lastPlaceCount: 0, matches: [] }
+      }
+      statsMap[res.player].lastPlaceCount++
+      statsMap[res.player].matches.push({
+        matchNumber: match.matchNumber,
+        teams: match.teams,
+        score: res.score,
+        rank: res.rank
+      })
+    }
+  }
+
+  return Object.values(statsMap).sort((a, b) => b.lastPlaceCount - a.lastPlaceCount)
+}
+
+// ---------------------------------------------------------------------------
+// getWorstLosingStreaks()
+// ---------------------------------------------------------------------------
+
+export function getWorstLosingStreaks() {
+  const streaks = []
+
+  for (const player of allPlayers) {
+    let currentStreakCount = 0
+    let currentStreakMatches = []
+    let worstStreakCount = 0
+    let worstStreakMatches = []
+
+    for (const match of matches) {
+      const result = match.results.find((r) => r.player === player)
+      if (!result) continue // Skipped match doesn't break streak
+
+      if (result.rank > 1) {
+        currentStreakCount++
+        currentStreakMatches.push({
+          matchNumber: match.matchNumber,
+          teams: match.teams,
+          rank: result.rank,
+          score: result.score
+        })
+        if (currentStreakCount > worstStreakCount) {
+          worstStreakCount = currentStreakCount
+          worstStreakMatches = [...currentStreakMatches]
+        }
+      } else {
+        currentStreakCount = 0
+        currentStreakMatches = []
+      }
+    }
+
+    streaks.push({
+      player,
+      worstStreak: worstStreakCount,
+      matches: worstStreakMatches
+    })
+  }
+
+  return streaks.sort((a, b) => b.worstStreak - a.worstStreak)
+}
+
+// ---------------------------------------------------------------------------
+// getVolatilityStats()
+// ---------------------------------------------------------------------------
+
+export function getVolatilityStats() {
+  const allStats = getAllPlayerStats()
+  const eligible = allStats.filter(s => s.gamesPlayed >= 5)
+
+  const volatility = eligible.map(s => ({
+    player: s.player,
+    stdDev: s.stdDev,
+    avgScore: s.avgPoints,
+    highestScore: s.bestScore,
+    lowestScore: s.worstScore,
+    gamesPlayed: s.gamesPlayed
+  }))
+
+  return volatility.sort((a, b) => b.stdDev - a.stdDev)
+}
+
+// ---------------------------------------------------------------------------
+// getSlowestStarters()
+// ---------------------------------------------------------------------------
+
+export function getSlowestStarters() {
+  const starters = []
+
+  for (const player of allPlayers) {
+    const playerMatches = []
+
+    for (const match of matches) {
+      const result = match.results.find(r => r.player === player)
+      if (result) {
+        playerMatches.push({
+          matchNumber: match.matchNumber,
+          teams: match.teams,
+          score: result.score,
+          rank: result.rank
+        })
+      }
+    }
+
+    if (playerMatches.length >= 10) {
+      const first10 = playerMatches.slice(0, 10)
+      const sum = first10.reduce((a, b) => a + b.score, 0)
+      const earlyAvg = round1(sum / 10)
+
+      starters.push({
+        player,
+        earlyAvg,
+        first10Matches: first10,
+        gamesPlayed: playerMatches.length
+      })
+    }
+  }
+
+  return starters.sort((a, b) => a.earlyAvg - b.earlyAvg)
+}
+
+// ---------------------------------------------------------------------------
+// getGhostAwardStats()
+// ---------------------------------------------------------------------------
+export function getGhostAwardStats() {
+  const stats = []
+  for (const player of allPlayers) {
+    let currentStreakCount = 0
+    let currentStreakMatches = []
+    let worstStreakCount = 0
+    let worstStreakMatches = []
+
+    for (const match of matches) {
+      const result = match.results.find((r) => r.player === player)
+      if (!result) { // skipped
+        currentStreakCount++
+        currentStreakMatches.push({ matchNumber: match.matchNumber, teams: match.teams })
+        if (currentStreakCount > worstStreakCount) {
+          worstStreakCount = currentStreakCount
+          worstStreakMatches = [...currentStreakMatches]
+        }
+      } else {
+        currentStreakCount = 0
+        currentStreakMatches = []
+      }
+    }
+    stats.push({
+      player,
+      longestSkipStreak: worstStreakCount,
+      matches: worstStreakMatches
+    })
+  }
+  return stats.sort((a, b) => b.longestSkipStreak - a.longestSkipStreak)
+}
+
+// ---------------------------------------------------------------------------
+// getClosestNearMiss()
+// ---------------------------------------------------------------------------
+export function getClosestNearMiss() {
+  const nearMisses = []
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    // Find rank 1 score and rank 2 score
+    const ranks = [...new Set(match.results.map(r => r.rank))].sort((a, b) => a - b)
+    if (ranks.length < 2) continue // Need at least two ranks
+
+    const rank1Score = match.results.find(r => r.rank === ranks[0]).score
+    const rank1Players = match.results.filter(r => r.rank === ranks[0]).map(r => r.player).join(', ')
+    const rank2Score = match.results.find(r => r.rank === ranks[1]).score
+    const rank2Players = match.results.filter(r => r.rank === ranks[1])
+
+    const gapPoints = rank1Score - rank2Score
+    const gapPercent = round1((gapPoints / rank1Score) * 100)
+
+    for (const r2 of rank2Players) {
+      nearMisses.push({
+        player: r2.player,
+        matchNumber: match.matchNumber,
+        teams: match.teams,
+        rank1Player: rank1Players,
+        rank1Score: rank1Score,
+        rank2Score: rank2Score,
+        gapPoints: round1(gapPoints),
+        gapPercent: gapPercent
+      })
+    }
+  }
+
+  return nearMisses.sort((a, b) => a.gapPercent - b.gapPercent)
+}
+
+// ---------------------------------------------------------------------------
+// getSilverMedalStats()
+// ---------------------------------------------------------------------------
+export function getSilverMedalStats() {
+  const statsMap = {}
+  for (const player of allPlayers) {
+    statsMap[player] = { player, silverCount: 0, matches: [] }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    const ranks = [...new Set(match.results.map(r => r.rank))].sort((a, b) => a - b)
+    if (ranks.length < 2) continue
+
+    const rank1Score = match.results.find(r => r.rank === ranks[0]).score
+    const rank1Players = match.results.filter(r => r.rank === ranks[0]).map(r => r.player).join(', ')
+
+    const rank2Results = match.results.filter(r => r.rank === ranks[1])
+
+    for (const res of rank2Results) {
+      if (!statsMap[res.player]) {
+        statsMap[res.player] = { player: res.player, silverCount: 0, matches: [] }
+      }
+      statsMap[res.player].silverCount++
+      statsMap[res.player].matches.push({
+        matchNumber: match.matchNumber,
+        teams: match.teams,
+        score: res.score,
+        rank1Player: rank1Players,
+        rank1Score: rank1Score
+      })
+    }
+  }
+
+  return Object.values(statsMap).sort((a, b) => b.silverCount - a.silverCount)
+}
+
+// ---------------------------------------------------------------------------
+// getWorstScores(limit) and getWorstSingleScore()
+// ---------------------------------------------------------------------------
+export function getWorstScores(limit = 10) {
+  const allScores = []
+  for (const match of matches) {
+    for (const result of match.results) {
+      allScores.push({
+        score: result.score,
+        player: result.player,
+        matchNumber: match.matchNumber,
+        teams: match.teams
+      })
+    }
+  }
+  return allScores.sort((a, b) => a.score - b.score).slice(0, limit)
+}
+
+export function getWorstSingleScore() {
+  const worst = getWorstScores(1000)
+  if (worst.length === 0) return []
+  const minScore = worst[0].score
+  return worst.filter(s => s.score === minScore)
+}
+
+// ---------------------------------------------------------------------------
+// getBelowAverageStats()
+// ---------------------------------------------------------------------------
+export function getBelowAverageStats() {
+  const statsMap = {}
+  for (const player of allPlayers) {
+    statsMap[player] = { player, belowAvgCount: 0, gamesPlayed: 0, matches: [] }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    const matchScores = match.results.map(r => r.score)
+    const matchAvg = round1(matchScores.reduce((a, b) => a + b, 0) / matchScores.length)
+
+    for (const res of match.results) {
+      if (!statsMap[res.player]) {
+        statsMap[res.player] = { player: res.player, belowAvgCount: 0, gamesPlayed: 0, matches: [] }
+      }
+
+      statsMap[res.player].gamesPlayed++
+
+      if (res.score < matchAvg) {
+        statsMap[res.player].belowAvgCount++
+        statsMap[res.player].matches.push({
+          matchNumber: match.matchNumber,
+          teams: match.teams,
+          score: res.score,
+          matchAvg: matchAvg,
+          difference: round1(res.score - matchAvg)
+        })
+      }
+    }
+  }
+
+  const result = Object.values(statsMap).map(s => {
+    return {
+      ...s,
+      belowAvgRate: s.gamesPlayed > 0 ? round1((s.belowAvgCount / s.gamesPlayed) * 100) : 0
+    }
+  })
+
+  return result.sort((a, b) => b.belowAvgCount - a.belowAvgCount)
 }

@@ -52,10 +52,6 @@ function computeRecords(allStats) {
   const maxGames = Math.max(...allStats.map(s => s.gamesPlayed))
   const mostGames = allStats.filter(s => s.gamesPlayed === maxGames)
 
-  // 5. Most Skips
-  const maxSkips = Math.max(...allStats.map(s => s.skips))
-  const mostSkips = allStats.filter(s => s.skips === maxSkips)
-
   // 6. Most Consistent (lowest std deviation, min 5 games played)
   const eligible = allStats.filter((s) => s.gamesPlayed >= 5)
   let mostConsistent = []
@@ -80,7 +76,6 @@ function computeRecords(allStats) {
     highestScoreEntries: { score: maxScore, players: uniqueHighestScorePlayers, subtitle: highestScoreEntries.length === 1 ? `Match ${highestScoreEntries[0].matchNumber} · ${highestScoreEntries[0].teams}` : 'Multiple matches' },
     bestStreakEntries,
     mostGames,
-    mostSkips,
     mostConsistent,
     mostConsecutiveTop3
   }
@@ -163,7 +158,7 @@ export default function HallOfFame() {
   }, [activeModal])
 
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostSkips, mostConsistent, mostConsecutiveTop3 } =
+  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostConsistent, mostConsecutiveTop3 } =
     computeRecords(allStats)
 
   const cards = [
@@ -223,14 +218,7 @@ export default function HallOfFame() {
       players: mostConsecutiveTop3.map(p => p.player),
       subtitle: 'Skips not counted',
     },
-    {
-      id: 'most-skips',
-      emoji: '💀',
-      title: 'Most Skips',
-      statValue: mostSkips[0].skips,
-      players: mostSkips.map(p => p.player),
-      subtitle: mostSkips.length === 1 ? `${mostSkips[0].gamesPlayed} games played` : 'Multiple players',
-    },
+
     {
       id: 'most-consistent',
       emoji: '🎯',
@@ -402,31 +390,7 @@ export default function HallOfFame() {
           </tr>
         ))
     }
-    else if (activeModal === 'most-skips') {
-      modalTitle = "Most Skips"
-      modalDesc = "Total number of games skipped by each player"
-      tableHeader = (
-        <tr>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Skips</th>
-        </tr>
-      )
-      const sortedStats = [...allStats].sort((a, b) => b.skips - a.skips)
-      let currentRank = 0
-      let lastVal = null
-      const rankedStats = sortedStats.map((stat, idx) => {
-        if (stat.skips !== lastVal) { currentRank++; lastVal = stat.skips }
-        return { ...stat, rank: currentRank }
-      })
-      tableBody = rankedStats.map((stat, idx) => (
-          <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
-            <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
-            <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.skips}</td>
-          </tr>
-        ))
-    }
+
     else if (activeModal === 'most-consistent') {
       modalTitle = "Most Consistent"
       modalDesc = "Standard deviation of scores (lower is better, min 5 games)"
