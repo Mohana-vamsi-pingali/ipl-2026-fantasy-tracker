@@ -25,9 +25,9 @@ function rowStyle(rank) {
 }
 
 export default function LeaderboardTable({ stats, externalSortKey }) {
-  // overallChamp is always the #1 by totalPoints regardless of current sort
+  // overallChamp is always the #1 by championshipPoints regardless of current sort
   const overallChamp = useMemo(
-    () => [...stats].sort((a, b) => b.totalPoints - a.totalPoints)[0]?.player,
+    () => [...stats].sort((a, b) => b.championshipPoints - a.championshipPoints)[0]?.player,
     [stats]
   )
 

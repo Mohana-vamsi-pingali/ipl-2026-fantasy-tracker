@@ -12,7 +12,7 @@ export const metadata = {
 export default function HomePage() {
   const stats = getAllPlayerStats()
   const totalMatches = Math.max(...stats.map((s) => s.gamesPlayed + s.skips))
-  const topPlayer = [...stats].sort((a, b) => b.totalPoints - a.totalPoints)[0]
+  const topPlayer = [...stats].sort((a, b) => b.championshipPoints - a.championshipPoints)[0]
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

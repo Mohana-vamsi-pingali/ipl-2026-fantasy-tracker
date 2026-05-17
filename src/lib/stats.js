@@ -4,6 +4,11 @@ import { matches, allPlayers } from '@/data/matches'
 // Helpers
 // ---------------------------------------------------------------------------
 
+const CHAMPIONSHIP_POINTS = {
+  1: 20, 2: 16, 3: 13, 4: 11, 5: 9,
+  6: 7, 7: 5, 8: 3, 9: 2, 10: 1
+}
+
 function round1(n) {
   return Math.round(n * 10) / 10
 }
@@ -54,6 +59,7 @@ export function getAllPlayerStats() {
   const allLastPlace = getLastPlaceStats()
   const allSilverMedals = getSilverMedalStats()
   const allBelowAvg = getBelowAverageStats()
+  const championshipStandings = getChampionshipStandings()
 
   return allPlayers.map((player) => {
     const entries = []
@@ -78,6 +84,7 @@ export function getAllPlayerStats() {
     const lastPlaceCount = allLastPlace.find(s => s.player === player)?.lastPlaceCount || 0
     const silverMedals = allSilverMedals.find(s => s.player === player)?.silverCount || 0
     const belowAvgCount = allBelowAvg.find(s => s.player === player)?.belowAvgCount || 0
+    const championshipPoints = championshipStandings.find(s => s.player === player)?.championshipPoints || 0
     const stdDevScore = stdDev(scores)
 
     return {
@@ -96,6 +103,7 @@ export function getAllPlayerStats() {
       lastPlaceCount,
       silverMedals,
       belowAvgCount,
+      championshipPoints,
       stdDev: stdDevScore,
     }
   })
@@ -683,4 +691,36 @@ export function getBelowAverageStats() {
   })
 
   return result.sort((a, b) => b.belowAvgCount - a.belowAvgCount)
+}
+
+// ---------------------------------------------------------------------------
+// getChampionshipStandings()
+// ---------------------------------------------------------------------------
+export function getChampionshipStandings() {
+  const standingsMap = {}
+  for (const player of allPlayers) {
+    standingsMap[player] = { player, championshipPoints: 0, matchesPlayed: 0, skips: 0 }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    const participantNames = match.results.map((r) => r.player)
+    
+    // Assign skips
+    for (const player of allPlayers) {
+      if (!participantNames.includes(player)) {
+        standingsMap[player].skips++
+      }
+    }
+
+    // Assign points based on rank
+    for (const result of match.results) {
+      standingsMap[result.player].matchesPlayed++
+      const points = CHAMPIONSHIP_POINTS[result.rank] || 0
+      standingsMap[result.player].championshipPoints += points
+    }
+  }
+
+  return Object.values(standingsMap).sort((a, b) => b.championshipPoints - a.championshipPoints)
 }
