@@ -629,7 +629,7 @@ Match-61 PK vs RCB
 9-@Vamsi -492
 
 Match-62 DC vs RR
-1-@Narsi Reddy-1024
+1-@Narsi Reddy -1024
 2-@Ricky -991
 3-@Pranay -952
 4-@Abhishek -927
