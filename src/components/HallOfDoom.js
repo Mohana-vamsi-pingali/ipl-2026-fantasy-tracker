@@ -309,13 +309,22 @@ export default function HallOfDoom() {
       subtitle: 'Last place = lowest rank among participants that day',
     },
     {
+      id: 'most-skips',
+      emoji: '💀',
+      title: 'Most Skips',
+      color: '#7C3AED',
+      statValue: mostSkips[0]?.skips || 0,
+      players: mostSkips.map(p => p.player),
+      subtitle: mostSkips.length === 1 ? `${mostSkips[0].gamesPlayed} games played` : 'Multiple players',
+    },
+    {
       id: 'worst-losing-streak',
       emoji: '🥶',
       title: 'Worst Losing Streak',
       color: '#1D4ED8',
       statValue: `${maxLosingStreak} matches`,
       players: topLosingPlayers,
-      subtitle: 'Consecutive matches without a win. Skips not counted.',
+      subtitle: 'Consecutive matches without a win',
     },
     {
       id: 'most-volatile',
@@ -324,7 +333,7 @@ export default function HallOfDoom() {
       color: '#EA580C',
       statValue: `${maxVolatile}`,
       players: topVolatilePlayers,
-      subtitle: 'Highest score standard deviation. Min 5 games.',
+      subtitle: 'Highest score standard deviation',
     },
     {
       id: 'slowest-starter',
@@ -336,15 +345,6 @@ export default function HallOfDoom() {
       subtitle: 'Lowest avg score in their first 10 matches played.',
     },
     {
-      id: 'most-skips',
-      emoji: '💀',
-      title: 'Most Skips',
-      color: '#7C3AED',
-      statValue: mostSkips[0]?.skips || 0,
-      players: mostSkips.map(p => p.player),
-      subtitle: mostSkips.length === 1 ? `${mostSkips[0].gamesPlayed} games played` : 'Multiple players',
-    },
-    {
       id: 'ghost-award',
       emoji: '👻',
       title: 'Ghost Award',
@@ -352,15 +352,6 @@ export default function HallOfDoom() {
       statValue: `${maxGhost} matches`,
       players: topGhostPlayers.length > 0 ? topGhostPlayers : ['—'],
       subtitle: 'Most consecutive matches skipped.',
-    },
-    {
-      id: 'closest-near-miss',
-      emoji: '💔',
-      title: 'Closest Near Miss',
-      color: '#BE185D',
-      statValue: `${minGap}% gap`,
-      players: topNearMissPlayers.length > 0 ? [topNearMissPlayers.join(', ')] : ['—'],
-      subtitle: 'Came 2nd by the smallest margin across all matches.',
     },
     {
       id: 'most-silver-medals',
@@ -372,13 +363,22 @@ export default function HallOfDoom() {
       subtitle: 'Always the runner-up, never the winner.',
     },
     {
-      id: 'wooden-spoon',
-      emoji: '🗑️',
-      title: 'Wooden Spoon',
-      color: '#78350F',
-      statValue: `${minPoints.toLocaleString()} pts`,
-      players: woodenSpoonPlayers,
-      subtitle: 'Lowest total points in the season.',
+      id: 'below-average',
+      emoji: '😬',
+      title: 'Below Average Most Often',
+      color: '#4D7C0F',
+      statValue: `${maxBelowAvg} matches`,
+      players: topBelowAvgPlayers.length > 0 ? topBelowAvgPlayers : ['—'],
+      subtitle: 'Most matches scored below the day\'s average.',
+    },
+    {
+      id: 'closest-near-miss',
+      emoji: '💔',
+      title: 'Closest Near Miss',
+      color: '#BE185D',
+      statValue: `${minGap}% gap`,
+      players: topNearMissPlayers.length > 0 ? [topNearMissPlayers.join(', ')] : ['—'],
+      subtitle: 'Came 2nd by the smallest margin across all matches.',
     },
     {
       id: 'worst-single-score',
@@ -388,16 +388,18 @@ export default function HallOfDoom() {
       statValue: `${absoluteWorstScore} pts`,
       players: absoluteWorstPlayers.length > 0 ? absoluteWorstPlayers : ['—'],
       subtitle: 'Lowest individual score recorded this season.',
-    },
-    {
-      id: 'below-average',
-      emoji: '😬',
-      title: 'Below Average Most Often',
-      color: '#4D7C0F',
-      statValue: `${maxBelowAvg} matches`,
-      players: topBelowAvgPlayers.length > 0 ? topBelowAvgPlayers : ['—'],
-      subtitle: 'Most matches scored below the day\'s average.',
     }
+    /*
+    {
+      id: 'wooden-spoon',
+      emoji: '🗑️',
+      title: 'Wooden Spoon',
+      color: '#78350F',
+      statValue: `${minPoints.toLocaleString()} pts`,
+      players: woodenSpoonPlayers,
+      subtitle: 'Lowest total points in the season.',
+    }
+    */
   ]
 
   // Helper to render modal
