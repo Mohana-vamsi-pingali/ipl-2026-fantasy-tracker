@@ -639,4 +639,15 @@ Match-62 DC vs RR
 8-@Vamsi -874
 9-@Krishna -872.5
 10-@Prem -801
+
+Match-63 CSK vs SRH
+1-@Krishna -868.5
+2-@Ricky -810.5
+3-@Pranay -793
+4-@Sai Teja -762.5
+5-@Narsi Reddy -755.5
+6-@Arjun -747.5
+7-@Prem -678.5
+8-@Vamsi -620
+9-@Bhanu -601.5
 `
