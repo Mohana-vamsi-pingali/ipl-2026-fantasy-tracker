@@ -650,4 +650,12 @@ Match-63 CSK vs SRH
 7-@Prem -678.5
 8-@Vamsi -620
 9-@Bhanu -601.5
+
+Match-64 RR vs LSG
+1-@Ricky -1281.5
+2-@Pranay -1238.5
+3-@Prem -1194
+3-@Narsi Reddy -1194
+4-@Arjun -1177
+5-@Bhanu -1036
 `
