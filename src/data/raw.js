@@ -658,4 +658,16 @@ Match-64 RR vs LSG
 3-@Narsi Reddy -1194
 4-@Arjun -1177
 5-@Bhanu -1036
+
+Match-65 MI vs KKR
+1-@Krishna -693
+2-@Arjun -657
+3-@Pranay -585
+4-@Abhishek -566
+5-@Vamsi -564
+6-@Bhanu -452.5
+7-@Ricky -449
+8-@Narsi Reddy -445
+9-@Prem -442
+10-@Sai Teja -431
 `
