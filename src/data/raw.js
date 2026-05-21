@@ -670,4 +670,15 @@ Match-65 MI vs KKR
 8-@Narsi Reddy -445
 9-@Prem -442
 10-@Sai Teja -431
+
+Match-66 CSK vs GT
+1-@Arjun -1113
+2-@Narsi Reddy -984
+3-@Sai Teja -969
+4-@Vamsi -917.5
+5-@Pranay -874
+6-@Ricky -864
+7-@Krishna -846
+8-@Prem -339
+8-@Bhanu -339
 `
