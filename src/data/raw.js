@@ -681,4 +681,15 @@ Match-66 CSK vs GT
 7-@Krishna -846
 8-@Prem -339
 8-@Bhanu -339
+
+Match-67 RCB vs SRH
+1-@Ricky -1112
+2-@Krishna -1052
+3-@Narsi Reddy -946.5
+4-@Prem -939
+5-@Pranay -881.5
+6-@Bhanu -880.5
+7-@Vamsi -815
+8-@Sai Teja -706
+9-@Arjun -628.5
 `
