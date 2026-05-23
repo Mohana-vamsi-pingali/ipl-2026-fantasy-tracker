@@ -699,6 +699,6 @@ Match-68 PK vs LSG
 3-@Bhanu -935
 4-@Ricky -911
 5-@Prem -802
-6-@Sai Teja-673
+6-@Sai Teja -673
 7-@Arjun -608
 `
