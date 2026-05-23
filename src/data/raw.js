@@ -692,4 +692,13 @@ Match-67 RCB vs SRH
 7-@Vamsi -815
 8-@Sai Teja -706
 9-@Arjun -628.5
+
+Match-68 PK vs LSG
+1-@Pranay -944.5
+2-@Narsi Reddy -943.5
+3-@Bhanu -935
+4-@Ricky -911
+5-@Prem -802
+6-@Sai Teja-673
+7-@Arjun -608
 `
