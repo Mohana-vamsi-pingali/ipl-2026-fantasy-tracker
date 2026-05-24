@@ -701,4 +701,24 @@ Match-68 PK vs LSG
 5-@Prem -802
 6-@Sai Teja -673
 7-@Arjun -608
+
+Match-69 MI vs RR
+1-@Arjun -788
+2-@Bhanu -730.5
+3-@Vamsi -701
+4-@Narsi Reddy -679
+5-@Sai Teja -663
+6-@Ricky -651
+7-@Prem -604
+8-@Pranay -596
+
+Match-70 DC vs KKR
+1-@Bhanu -935.5
+2-@Ricky -856
+3-@Prem -817
+4-@Vamsi -813
+5-@Arjun -785
+6-@Narsi Reddy -765
+7-@Sai Teja -759.5
+8-@Pranay -698
 `
