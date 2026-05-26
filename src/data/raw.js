@@ -721,4 +721,15 @@ Match-70 DC vs KKR
 6-@Narsi Reddy -765
 7-@Sai Teja -759.5
 8-@Pranay -698
+
+Match-71 RCB vs GT
+1-@Arjun -1136
+2-@Pranay -1124
+3-@Krishna -1050.5
+4-@Prem -1043
+5-@Sai Teja -1019.5
+6-@Ricky -930.5
+7-@Vamsi -859
+8-@Narsi Reddy -823
+9-@Bhanu -544
 `
