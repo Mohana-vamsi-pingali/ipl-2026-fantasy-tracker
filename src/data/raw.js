@@ -732,4 +732,15 @@ Match-71 RCB vs GT
 7-@Vamsi -859
 8-@Narsi Reddy -823
 9-@Bhanu -544
+
+Match-72 SRH vs RR
+1-@Sai Teja -1211.5
+2-@Prem -1142
+3-@Arjun -1141
+4-@Vamsi -1136
+5-@Pranay -1121
+6-@Bhanu -1100.5
+7-@Ricky -1071
+8-@Krishna -1050.5
+9-@Narsi Reddy -930
 `
