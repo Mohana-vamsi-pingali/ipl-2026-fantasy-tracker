@@ -694,6 +694,96 @@ export function getBelowAverageStats() {
 }
 
 // ---------------------------------------------------------------------------
+// getImprovementStats()
+// ---------------------------------------------------------------------------
+export function getImprovementStats() {
+  const stats = []
+
+  for (const player of allPlayers) {
+    const playerMatches = []
+
+    for (const match of matches) {
+      const result = match.results.find((r) => r.player === player)
+      if (result) {
+        playerMatches.push({
+          matchNumber: match.matchNumber,
+          score: result.score,
+        })
+      }
+    }
+
+    playerMatches.sort((a, b) => a.matchNumber - b.matchNumber)
+
+    if (playerMatches.length >= 10) {
+      const halfSize = Math.floor(playerMatches.length / 2)
+      const firstHalf = playerMatches.slice(0, halfSize)
+      const secondHalf = playerMatches.slice(halfSize)
+
+      const firstHalfSum = firstHalf.reduce((a, b) => a + b.score, 0)
+      const secondHalfSum = secondHalf.reduce((a, b) => a + b.score, 0)
+
+      const firstHalfAvg = round1(firstHalfSum / firstHalf.length)
+      const secondHalfAvg = round1(secondHalfSum / secondHalf.length)
+      const improvement = round1(secondHalfAvg - firstHalfAvg)
+
+      stats.push({
+        player,
+        improvement,
+        firstHalfAvg,
+        secondHalfAvg,
+        gamesPlayed: playerMatches.length
+      })
+    }
+  }
+
+  return stats.sort((a, b) => b.improvement - a.improvement)
+}
+
+// ---------------------------------------------------------------------------
+// getSharpshooterStats()
+// ---------------------------------------------------------------------------
+export function getSharpshooterStats() {
+  const statsMap = {}
+  for (const player of allPlayers) {
+    statsMap[player] = { player, sharpshooterCount: 0, gamesPlayed: 0, matches: [] }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    const winnerScore = Math.max(...match.results.map(r => r.score))
+
+    for (const res of match.results) {
+      statsMap[res.player].gamesPlayed++
+
+      const gapPercent = round1(((winnerScore - res.score) / winnerScore) * 100)
+
+      if (gapPercent <= 5 && res.rank > 1) {
+        statsMap[res.player].sharpshooterCount++
+        statsMap[res.player].matches.push({
+          matchNumber: match.matchNumber,
+          teams: match.teams,
+          score: res.score,
+          winnerScore,
+          gapPercent
+        })
+      }
+    }
+  }
+
+  const result = Object.values(statsMap)
+    .filter(s => s.gamesPlayed >= 10)
+    .map(s => {
+      return {
+        ...s,
+        sharpshooterRate: round1((s.sharpshooterCount / s.gamesPlayed) * 100)
+      }
+    })
+
+  return result.sort((a, b) => b.sharpshooterCount - a.sharpshooterCount)
+}
+
+// ---------------------------------------------------------------------------
 // getChampionshipStandings()
 // ---------------------------------------------------------------------------
 export function getChampionshipStandings() {
@@ -706,7 +796,7 @@ export function getChampionshipStandings() {
     if (!match.results || match.results.length === 0) continue
 
     const participantNames = match.results.map((r) => r.player)
-    
+
     // Assign skips
     for (const player of allPlayers) {
       if (!participantNames.includes(player)) {

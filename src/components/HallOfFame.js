@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks, getAllTop3Streaks } from '@/lib/stats'
+import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks, getAllTop3Streaks, getImprovementStats, getSharpshooterStats } from '@/lib/stats'
 
 // ── Record definitions ──────────────────────────────────────────────────────
 
@@ -69,6 +69,21 @@ function computeRecords(allStats) {
   const maxTop3Streak = Math.max(...allStats.map(s => s.bestTop3Streak || 0))
   const mostConsecutiveTop3 = allStats.filter(s => s.bestTop3Streak === maxTop3Streak && maxTop3Streak > 0)
 
+  // 8. Highest Win Rate (min 10 games)
+  const eligibleWinRate = allStats.filter(s => s.gamesPlayed >= 10)
+  const maxWinRate = eligibleWinRate.length > 0 ? Math.max(...eligibleWinRate.map(s => s.winRate)) : 0
+  const highestWinRate = eligibleWinRate.filter(s => s.winRate === maxWinRate)
+
+  // 9. Most Improved (min 10 games)
+  const improvementStats = getImprovementStats()
+  const maxImprovement = improvementStats.length > 0 ? Math.max(...improvementStats.map(s => s.improvement)) : 0
+  const mostImproved = improvementStats.filter(s => s.improvement === maxImprovement)
+
+  // 10. Sharpshooter (min 10 games)
+  const sharpshooterStats = getSharpshooterStats()
+  const maxSharpshooter = sharpshooterStats.length > 0 ? Math.max(...sharpshooterStats.map(s => s.sharpshooterCount)) : 0
+  const sharpshooter = sharpshooterStats.filter(s => s.sharpshooterCount === maxSharpshooter && maxSharpshooter > 0)
+
   return {
     highestTotalPoints,
     mostWins,
@@ -77,7 +92,12 @@ function computeRecords(allStats) {
     bestStreakEntries,
     mostGames,
     mostConsistent,
-    mostConsecutiveTop3
+    mostConsecutiveTop3,
+    highestWinRate,
+    mostImproved,
+    sharpshooter,
+    improvementStats,
+    sharpshooterStats
   }
 }
 
@@ -141,6 +161,57 @@ function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, o
   )
 }
 
+function PlayerSharpshooterRow({ stat, rowClass, rankClass }) {
+  const [expanded, setExpanded] = useState(false)
+  const isZero = stat.sharpshooterCount === 0
+
+  return (
+    <>
+      <tr
+        onClick={() => !isZero && setExpanded(!expanded)}
+        className={`transition-colors ${isZero ? 'opacity-40' : 'cursor-pointer'} ${rowClass}`}
+      >
+        <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
+        <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+        <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.sharpshooterCount}</td>
+        <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.gamesPlayed}</td>
+        <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.sharpshooterRate}%</td>
+      </tr>
+      {expanded && !isZero && (
+        <tr className="bg-black/40">
+          <td colSpan="5" className="px-6 py-4">
+            <div className="text-xs text-gray-400 mb-2 font-semibold uppercase tracking-wider">Matches within 5% of winner:</div>
+            <div className="space-y-2">
+              {stat.matches.map((m, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-white/5 p-2 rounded">
+                  <div>
+                    <span className="font-bold text-white">Match {m.matchNumber}</span>
+                    <span className="text-gray-500 ml-2">{m.teams}</span>
+                  </div>
+                  <div className="text-right flex items-center gap-4">
+                    <div>
+                      <div className="text-gray-400 text-[10px] uppercase tracking-wide">Their Score</div>
+                      <div className="font-bold text-yellow-400">{m.score}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400 text-[10px] uppercase tracking-wide">Winner</div>
+                      <div className="font-bold text-white">{m.winnerScore}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-400 text-[10px] uppercase tracking-wide">Gap</div>
+                      <div className="font-bold text-green-400">{m.gapPercent}%</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  )
+}
+
 // ── Main export ─────────────────────────────────────────────────────────────
 
 export default function HallOfFame() {
@@ -158,7 +229,7 @@ export default function HallOfFame() {
   }, [activeModal])
 
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostConsistent, mostConsecutiveTop3 } =
+  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostConsistent, mostConsecutiveTop3, highestWinRate, mostImproved, sharpshooter, improvementStats, sharpshooterStats } =
     computeRecords(allStats)
 
   const cards = [
@@ -229,6 +300,31 @@ export default function HallOfFame() {
         ? `Std deviation · ${mostConsistent[0].gamesPlayed} games`
         : mostConsistent.length > 1 ? 'Std deviation · Multiple players' : 'Min 5 games required',
     },
+    {
+      id: 'highest-win-rate',
+      emoji: '⚡',
+      title: 'Highest Win Rate',
+      statValue: highestWinRate.length > 0 ? `${highestWinRate[0].winRate}%` : 'N/A',
+      players: highestWinRate.map(p => p.player),
+      subtitle: 'Best wins per game ratio. Min 10 games.',
+      themeIndex: 0 // Cyan could be used here but requested as #06B6D4 in Doom, wait HOF follows existing gold themes. We let the loop handle themeIndex.
+    },
+    {
+      id: 'most-improved',
+      emoji: '📈',
+      title: 'Most Improved',
+      statValue: mostImproved.length > 0 ? `+${mostImproved[0].improvement} pts` : 'N/A',
+      players: mostImproved.map(p => p.player),
+      subtitle: 'Biggest avg score improvement: first half vs second half of season.',
+    },
+    {
+      id: 'sharpshooter',
+      emoji: '🏹',
+      title: 'Sharpshooter',
+      statValue: sharpshooter.length > 0 ? `${sharpshooter[0].sharpshooterCount} matches` : '0 matches',
+      players: sharpshooter.map(p => p.player),
+      subtitle: 'Most matches within 5% of the winner\'s score (excluding wins).',
+    },
   ]
 
   // Helper to render modal headers and tables based on activeModal
@@ -254,13 +350,17 @@ export default function HallOfFame() {
         if (stat.totalPoints !== lastVal) { currentRank++; lastVal = stat.totalPoints }
         return { ...stat, rank: currentRank }
       })
-      tableBody = rankedStats.map((stat, idx) => (
-          <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+      tableBody = rankedStats.map((stat, idx) => {
+        const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.totalPoints.toLocaleString()}</td>
           </tr>
-        ))
+        )
+      })
     }
     else if (activeModal === 'most-wins') {
       modalTitle = "Most Wins"
@@ -279,13 +379,17 @@ export default function HallOfFame() {
         if (stat.wins !== lastVal) { currentRank++; lastVal = stat.wins }
         return { ...stat, rank: currentRank }
       })
-      tableBody = rankedStats.map((stat, idx) => (
-          <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+      tableBody = rankedStats.map((stat, idx) => {
+        const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.wins}</td>
           </tr>
-        ))
+        )
+      })
     }
     else if (activeModal === 'most-top3') {
       modalTitle = "Top 3 Finishes Leaderboard"
@@ -304,13 +408,17 @@ export default function HallOfFame() {
         if (stat.top3 !== lastVal) { currentRank++; lastVal = stat.top3 }
         return { ...stat, rank: currentRank }
       })
-      tableBody = rankedStats.map((stat, idx) => (
-          <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+      tableBody = rankedStats.map((stat, idx) => {
+        const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.top3}</td>
           </tr>
-        ))
+        )
+      })
     }
     else if (activeModal === 'highest-score') {
       modalTitle = "Highest Scores"
@@ -335,14 +443,18 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Score</th>
         </tr>
       )
-      tableBody = rankedScores.map((scoreInfo, idx) => (
-        <tr key={`${scoreInfo.player}-${scoreInfo.matchNumber}`} className="hover:bg-white/5 transition-colors">
-          <td className="px-6 py-3 text-sm text-gray-400">{scoreInfo.rank}</td>
-          <td className="px-6 py-3 text-sm font-bold text-white">{scoreInfo.player}</td>
-          <td className="px-6 py-3 text-sm text-gray-400">Match {scoreInfo.matchNumber}</td>
-          <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{scoreInfo.score.toLocaleString()}</td>
-        </tr>
-      ))
+      tableBody = rankedScores.map((scoreInfo, idx) => {
+        const rowClass = scoreInfo.rank === 1 ? 'bg-yellow-500/10' : scoreInfo.rank === 2 ? 'bg-gray-400/10' : scoreInfo.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = scoreInfo.rank === 1 ? 'text-yellow-400' : scoreInfo.rank === 2 ? 'text-gray-300' : scoreInfo.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={`${scoreInfo.player}-${scoreInfo.matchNumber}`} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{scoreInfo.rank}</td>
+            <td className="px-6 py-3 text-sm font-bold text-white">{scoreInfo.player}</td>
+            <td className="px-6 py-3 text-sm text-gray-400">Match {scoreInfo.matchNumber}</td>
+            <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{scoreInfo.score.toLocaleString()}</td>
+          </tr>
+        )
+      })
     }
     else if (activeModal === 'longest-streak') {
       modalTitle = "Longest Win Streaks"
@@ -382,13 +494,17 @@ export default function HallOfFame() {
         if (stat.gamesPlayed !== lastVal) { currentRank++; lastVal = stat.gamesPlayed }
         return { ...stat, rank: currentRank }
       })
-      tableBody = rankedStats.map((stat, idx) => (
-          <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-            <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+      tableBody = rankedStats.map((stat, idx) => {
+        const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
             <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
             <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.gamesPlayed}</td>
           </tr>
-        ))
+        )
+      })
     }
 
     else if (activeModal === 'most-consistent') {
@@ -413,13 +529,17 @@ export default function HallOfFame() {
         if (stat.consistencyScore !== lastVal) { currentRank++; lastVal = stat.consistencyScore }
         return { ...stat, rank: currentRank }
       })
-      tableBody = rankedStats.map((stat, idx) => (
-        <tr key={stat.player} className="hover:bg-white/5 transition-colors">
-          <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
-          <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
-          <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">±{stat.consistencyScore}</td>
-        </tr>
-      ))
+      tableBody = rankedStats.map((stat, idx) => {
+        const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
+            <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+            <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">±{stat.consistencyScore}</td>
+          </tr>
+        )
+      })
     }
     else if (activeModal === 'longest-top3-streak') {
       modalTitle = "Most Consecutive Top 3 Finishes"
@@ -433,14 +553,161 @@ export default function HallOfFame() {
           <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Matches</th>
         </tr>
       )
-      tableBody = top3Streaks.map((s, idx) => (
-        <tr key={`${s.player}-${s.length}-${idx}`} className="hover:bg-white/5 transition-colors">
-          <td className="px-6 py-3 text-sm text-gray-400">{s.rank}</td>
-          <td className="px-6 py-3 text-sm font-bold text-white">{s.player}</td>
-          <td className="px-6 py-3 text-sm font-black text-yellow-400">{s.length} matches</td>
-          <td className="px-6 py-3 text-xs text-gray-400">Match {s.matches.map(m => m.matchNumber).join(', ')}</td>
+      tableBody = top3Streaks.map((s, idx) => {
+        const rowClass = s.rank === 1 ? 'bg-yellow-500/10' : s.rank === 2 ? 'bg-gray-400/10' : s.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+        const rankClass = s.rank === 1 ? 'text-yellow-400' : s.rank === 2 ? 'text-gray-300' : s.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+        return (
+          <tr key={`${s.player}-${s.length}-${idx}`} className={`transition-colors ${rowClass}`}>
+            <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{s.rank}</td>
+            <td className="px-6 py-3 text-sm font-bold text-white">{s.player}</td>
+            <td className="px-6 py-3 text-sm font-black text-yellow-400">{s.length} matches</td>
+            <td className="px-6 py-3 text-xs text-gray-400">Match {s.matches.map(m => m.matchNumber).join(', ')}</td>
+          </tr>
+        )
+      })
+    }
+    else if (activeModal === 'highest-win-rate') {
+      modalTitle = "Highest Win Rate"
+      modalDesc = "Win rate = wins ÷ games played × 100. Min 10 games to qualify."
+
+      const eligible = allStats.filter(s => s.gamesPlayed >= 10).sort((a, b) => b.winRate - a.winRate)
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = eligible.map((stat) => {
+        if (stat.winRate !== lastVal) { currentRank++; lastVal = stat.winRate }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Win Rate %</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Wins</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Games Played</th>
         </tr>
-      ))
+      )
+
+      tableBody = (
+        <>
+          {rankedStats.map((stat) => {
+            const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+            const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+            return (
+              <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+                <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
+                <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+                <td className="px-6 py-3 text-sm font-black text-yellow-400 text-right">{stat.winRate}%</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.wins}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.gamesPlayed}</td>
+              </tr>
+            )
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
+    }
+    else if (activeModal === 'most-improved') {
+      modalTitle = "Most Improved"
+      modalDesc = "Compares each player's average score in their first vs second half of matches played. Min 10 games."
+
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      const sortedStats = [...improvementStats].sort((a, b) => b.improvement - a.improvement)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat) => {
+        if (stat.improvement !== lastVal) { currentRank++; lastVal = stat.improvement }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">First Half Avg</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Second Half Avg</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Improvement</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedStats.map((stat) => {
+            const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+            const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+            const valClass = stat.improvement > 0 ? 'text-green-400' : stat.improvement < 0 ? 'text-red-400' : 'text-gray-400'
+            const sign = stat.improvement > 0 ? '+' : ''
+            return (
+              <tr key={stat.player} className={`transition-colors ${rowClass}`}>
+                <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
+                <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.firstHalfAvg.toFixed(1)}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.secondHalfAvg.toFixed(1)}</td>
+                <td className={`px-6 py-3 text-sm font-black text-right ${valClass}`}>{sign}{stat.improvement.toFixed(1)}</td>
+              </tr>
+            )
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
+    }
+    else if (activeModal === 'sharpshooter') {
+      modalTitle = "Sharpshooter"
+      modalDesc = "Matches where the player scored within 5% of the match winner, but did not win. Min 10 games."
+
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      const sortedStats = [...sharpshooterStats].sort((a, b) => b.sharpshooterCount - a.sharpshooterCount)
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat) => {
+        if (stat.sharpshooterCount !== lastVal) { currentRank++; lastVal = stat.sharpshooterCount }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Matches Within 5%</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Games Played</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Rate %</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedStats.map((stat) => {
+            const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+            const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+            return (
+              <PlayerSharpshooterRow key={stat.player} stat={stat} rowClass={rowClass} rankClass={rankClass} />
+            )
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
     }
 
     return (

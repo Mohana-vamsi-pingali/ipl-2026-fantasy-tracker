@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import {
   getLastPlaceStats, getAllPlayerStats, getWorstLosingStreaks, getVolatilityStats, getSlowestStarters,
-  getGhostAwardStats, getClosestNearMiss, getSilverMedalStats, getWorstSingleScore, getWorstScores, getBelowAverageStats
+  getGhostAwardStats, getClosestNearMiss, getSilverMedalStats, getWorstSingleScore, getWorstScores, getBelowAverageStats, getImprovementStats
 } from '@/lib/stats'
 
 // ── Individual Hall of Doom card ────────────────────────────────────────────
@@ -298,6 +298,20 @@ export default function HallOfDoom() {
   const maxBelowAvg = belowAvgStats.length > 0 ? Math.max(...belowAvgStats.map(d => d.belowAvgCount)) : 0
   const topBelowAvgPlayers = belowAvgStats.filter(d => d.belowAvgCount === maxBelowAvg && maxBelowAvg > 0).map(d => d.player)
 
+  // Calculate Least Wins & Lowest Win Rate
+  const eligibleDoom = allStats.filter(s => s.gamesPlayed >= 10)
+
+  const minWins = eligibleDoom.length > 0 ? Math.min(...eligibleDoom.map(d => d.wins)) : 0
+  const leastWins = eligibleDoom.filter(d => d.wins === minWins).map(d => d.player)
+
+  const minWinRate = eligibleDoom.length > 0 ? Math.min(...eligibleDoom.map(d => d.winRate)) : 0
+  const lowestWinRate = eligibleDoom.filter(d => d.winRate === minWinRate).map(d => d.player)
+
+  // Calculate Biggest Decline
+  const improvementStats = getImprovementStats()
+  const minImprovement = improvementStats.length > 0 ? Math.min(...improvementStats.map(s => s.improvement)) : 0
+  const biggestDecline = improvementStats.filter(s => s.improvement === minImprovement).map(s => s.player)
+
   const cards = [
     {
       id: 'last-place',
@@ -388,6 +402,33 @@ export default function HallOfDoom() {
       statValue: `${absoluteWorstScore} pts`,
       players: absoluteWorstPlayers.length > 0 ? absoluteWorstPlayers : ['—'],
       subtitle: 'Lowest individual score recorded this season.',
+    },
+    {
+      id: 'least-wins',
+      emoji: '😶',
+      title: 'Least Wins',
+      color: '#64748B',
+      statValue: `${minWins} win${minWins === 1 ? '' : 's'}`,
+      players: leastWins.length > 0 ? leastWins : ['—'],
+      subtitle: 'Fewest match wins. Min 10 games.',
+    },
+    {
+      id: 'lowest-win-rate',
+      emoji: '📉',
+      title: 'Lowest Win Rate',
+      color: '#B45309',
+      statValue: `${minWinRate}%`,
+      players: lowestWinRate.length > 0 ? lowestWinRate : ['—'],
+      subtitle: 'Worst wins per game ratio. Min 10 games.',
+    },
+    {
+      id: 'biggest-decline',
+      emoji: '🥴',
+      title: 'Barely Improved',
+      color: '#BE123C',
+      statValue: `${minImprovement > 0 ? '+' : ''}${minImprovement} pts`,
+      players: biggestDecline.length > 0 ? biggestDecline : ['—'],
+      subtitle: 'Biggest avg score drop: first half vs second half of season.',
     }
     /*
     {
@@ -789,6 +830,160 @@ export default function HallOfDoom() {
       tableBody = fullData.map((stat) => (
         <MatchesRow key={stat.player} stat={stat} isRank1={stat.rank === 1 && stat.belowAvgCount > 0} type="below-average" />
       ))
+    } else if (activeModal === 'least-wins') {
+      modalTitle = "Least Wins"
+      modalDesc = "Fewest rank 1 finishes. Min 10 games to qualify."
+
+      const eligible = allStats.filter(s => s.gamesPlayed >= 10).sort((a, b) => a.wins - b.wins)
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      let currentRank = 0
+      let lastVal = null
+      const rankedData = eligible.map((stat) => {
+        if (stat.wins !== lastVal) {
+          currentRank++
+          lastVal = stat.wins
+        }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Wins</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Games Played</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Win Rate %</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedData.map((stat) => {
+            const isRank1 = stat.rank === 1;
+            return (
+              <tr key={stat.player} className={`hover:bg-white/5 transition-colors ${isRank1 ? 'bg-red-500/10' : ''}`}>
+                <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+                <td className={`px-6 py-3 text-sm font-bold ${isRank1 ? 'text-red-400' : 'text-white'}`}>{stat.player}</td>
+                <td className="px-6 py-3 text-sm font-black text-red-400 text-right">{stat.wins}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.gamesPlayed}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.winRate}%</td>
+              </tr>
+            );
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
+    } else if (activeModal === 'lowest-win-rate') {
+      modalTitle = "Lowest Win Rate"
+      modalDesc = "Win rate = wins ÷ games played × 100. Min 10 games to qualify."
+
+      const eligible = allStats.filter(s => s.gamesPlayed >= 10).sort((a, b) => a.winRate - b.winRate)
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      let currentRank = 0
+      let lastVal = null
+      const rankedData = eligible.map((stat) => {
+        if (stat.winRate !== lastVal) {
+          currentRank++
+          lastVal = stat.winRate
+        }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Win Rate %</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Wins</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Games Played</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedData.map((stat) => {
+            const isRank1 = stat.rank === 1;
+            return (
+              <tr key={stat.player} className={`hover:bg-white/5 transition-colors ${isRank1 ? 'bg-red-500/10' : ''}`}>
+                <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+                <td className={`px-6 py-3 text-sm font-bold ${isRank1 ? 'text-red-400' : 'text-white'}`}>{stat.player}</td>
+                <td className="px-6 py-3 text-sm font-black text-red-400 text-right">{stat.winRate}%</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.wins}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.gamesPlayed}</td>
+              </tr>
+            );
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
+    } else if (activeModal === 'biggest-decline') {
+      modalTitle = "Barely Improved"
+      modalDesc = "Compares each player's average score in their first vs second half of matches played."
+
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+
+      // Sort improvementStats ascending to get biggest decline first
+      const sortedStats = [...improvementStats].sort((a, b) => a.improvement - b.improvement)
+
+      let currentRank = 0
+      let lastVal = null
+      const rankedData = sortedStats.map((stat) => {
+        if (stat.improvement !== lastVal) {
+          currentRank++
+          lastVal = stat.improvement
+        }
+        return { ...stat, rank: currentRank }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">First Half Avg</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Second Half Avg</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Change</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedData.map((stat) => {
+            const isRank1 = stat.rank === 1;
+            const valClass = stat.improvement < 0 ? 'text-red-400' : stat.improvement > 0 ? 'text-green-400' : 'text-gray-400'
+            const sign = stat.improvement > 0 ? '+' : ''
+            return (
+              <tr key={stat.player} className={`hover:bg-white/5 transition-colors ${isRank1 ? 'bg-red-500/10' : ''}`}>
+                <td className="px-6 py-3 text-sm text-gray-400">{stat.rank}</td>
+                <td className={`px-6 py-3 text-sm font-bold ${isRank1 ? 'text-red-400' : 'text-white'}`}>{stat.player}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.firstHalfAvg.toFixed(1)}</td>
+                <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.secondHalfAvg.toFixed(1)}</td>
+                <td className={`px-6 py-3 text-sm font-black text-right ${valClass}`}>{sign}{stat.improvement.toFixed(1)}</td>
+              </tr>
+            );
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
     }
 
     return (
