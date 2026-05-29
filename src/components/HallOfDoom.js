@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import {
   getLastPlaceStats, getAllPlayerStats, getWorstLosingStreaks, getVolatilityStats, getSlowestStarters,
-  getGhostAwardStats, getClosestNearMiss, getSilverMedalStats, getWorstSingleScore, getWorstScores, getBelowAverageStats, getImprovementStats
+  getGhostAwardStats, getClosestNearMiss, getWorstSingleScore, getWorstScores, getBelowAverageStats, getImprovementStats
 } from '@/lib/stats'
 
 // ── Individual Hall of Doom card ────────────────────────────────────────────
@@ -172,12 +172,6 @@ function MatchesRow({ stat, isRank1, type }) {
           </>
         )}
 
-        {type === 'most-silver-medals' && (
-          <>
-            <td className="px-6 py-3 text-sm font-black text-red-400 text-center">{stat.silverCount}</td>
-            <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.winRate}%</td>
-          </>
-        )}
 
         {type === 'below-average' && (
           <>
@@ -198,12 +192,7 @@ function MatchesRow({ stat, isRank1, type }) {
                     <span className="font-bold text-white">Match {m.matchNumber}</span>
                     <span className="text-gray-500 ml-2">{m.teams}</span>
                   </div>
-                  {type === 'most-silver-medals' ? (
-                    <div className="text-right">
-                      <div className="font-bold text-red-400">Score: {m.score}</div>
-                      <div className="text-gray-500 text-[10px] uppercase tracking-wide">Lost to: {m.rank1Player} ({m.rank1Score})</div>
-                    </div>
-                  ) : type === 'below-average' ? (
+                  {type === 'below-average' ? (
                     <div className="text-right">
                       <div className="font-bold text-red-400">Score: {m.score}</div>
                       <div className="text-gray-500 text-[10px] uppercase tracking-wide">Avg: {m.matchAvg} ({m.difference})</div>
@@ -278,11 +267,6 @@ export default function HallOfDoom() {
   const minGap = nearMisses.length > 0 ? Math.min(...nearMisses.map(d => d.gapPercent)) : 0
   const topNearMisses = nearMisses.filter(d => d.gapPercent === minGap)
   const topNearMissPlayers = [...new Set(topNearMisses.map(d => d.player))]
-
-  // Calculate Most Silver Medals
-  const silverMedals = getSilverMedalStats()
-  const maxSilver = silverMedals.length > 0 ? Math.max(...silverMedals.map(d => d.silverCount)) : 0
-  const topSilverPlayers = silverMedals.filter(d => d.silverCount === maxSilver && maxSilver > 0).map(d => d.player)
 
   // Calculate Wooden Spoon
   const minPoints = allStats.length > 0 ? Math.min(...allStats.map(d => d.totalPoints)) : 0
@@ -367,15 +351,7 @@ export default function HallOfDoom() {
       players: topGhostPlayers.length > 0 ? topGhostPlayers : ['—'],
       subtitle: 'Most consecutive matches skipped.',
     },
-    {
-      id: 'most-silver-medals',
-      emoji: '😭',
-      title: 'Most Silver Medals',
-      color: '#475569',
-      statValue: `${maxSilver} times`,
-      players: topSilverPlayers.length > 0 ? topSilverPlayers : ['—'],
-      subtitle: 'Always the runner-up, never the winner.',
-    },
+
     {
       id: 'below-average',
       emoji: '😬',
@@ -685,42 +661,6 @@ export default function HallOfDoom() {
           </tr>
         );
       })
-    } else if (activeModal === 'most-silver-medals') {
-      modalTitle = "Most Silver Medals"
-      modalDesc = "Most rank 2 finishes. Tied rank 2 counts for all tied players."
-
-      // We need to also show players with 0 silver medals at the bottom
-      const ineligible = allStats
-        .filter(s => !silverMedals.find(st => st.player === s.player))
-        .map(s => {
-          return { player: s.player, silverCount: 0, winRate: s.winRate };
-        });
-
-      let currentRank = 0
-      let lastVal = null
-      const rankedData = silverMedals.map((stat) => {
-        const pStats = allStats.find(s => s.player === stat.player)
-        if (stat.silverCount !== lastVal) {
-          currentRank++
-          lastVal = stat.silverCount
-        }
-        return { ...stat, rank: currentRank, winRate: pStats ? pStats.winRate : 0 }
-      })
-
-      const fullData = [...rankedData, ...ineligible];
-
-      tableHeader = (
-        <tr>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-center">Silver Medals</th>
-          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Win Rate %</th>
-        </tr>
-      )
-
-      tableBody = fullData.map((stat) => (
-        <MatchesRow key={stat.player} stat={stat} isRank1={stat.rank === 1 && stat.silverCount > 0} type="most-silver-medals" />
-      ))
     } else if (activeModal === 'wooden-spoon') {
       modalTitle = "Wooden Spoon"
       modalDesc = "Full season total points ranking, bottom up."

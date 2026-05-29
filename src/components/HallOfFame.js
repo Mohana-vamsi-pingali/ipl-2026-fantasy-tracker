@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks, getAllTop3Streaks, getImprovementStats, getSharpshooterStats } from '@/lib/stats'
+import { getAllPlayerStats, getPlayerStats, getTopScores, getAllWinStreaks, getAllTop3Streaks, getImprovementStats, getSharpshooterStats, getSilverMedalStats } from '@/lib/stats'
 
 // ── Record definitions ──────────────────────────────────────────────────────
 
@@ -84,6 +84,11 @@ function computeRecords(allStats) {
   const maxSharpshooter = sharpshooterStats.length > 0 ? Math.max(...sharpshooterStats.map(s => s.sharpshooterCount)) : 0
   const sharpshooter = sharpshooterStats.filter(s => s.sharpshooterCount === maxSharpshooter && maxSharpshooter > 0)
 
+  // 11. Most Silver Medals
+  const silverMedals = getSilverMedalStats()
+  const maxSilver = silverMedals.length > 0 ? Math.max(...silverMedals.map(d => d.silverCount)) : 0
+  const topSilverPlayers = silverMedals.filter(d => d.silverCount === maxSilver && maxSilver > 0).map(d => d.player)
+
   return {
     highestTotalPoints,
     mostWins,
@@ -97,7 +102,10 @@ function computeRecords(allStats) {
     mostImproved,
     sharpshooter,
     improvementStats,
-    sharpshooterStats
+    sharpshooterStats,
+    silverMedals,
+    maxSilver,
+    topSilverPlayers
   }
 }
 
@@ -112,8 +120,8 @@ const CARD_THEMES = [
   { bg: 'from-teal-500/10  to-teal-900/5', border: 'border-teal-400/30', accent: '#1ABC9C', glow: 'rgba(26,188,156,0.12)' },
 ]
 
-function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, onClick }) {
-  const theme = CARD_THEMES[themeIndex % CARD_THEMES.length]
+function HofCard({ id, emoji, title, statValue, players, subtitle, themeIndex, onClick, customTheme }) {
+  const theme = customTheme || CARD_THEMES[themeIndex % CARD_THEMES.length]
   const isClickable = !!onClick
 
   return (
@@ -212,6 +220,47 @@ function PlayerSharpshooterRow({ stat, rowClass, rankClass }) {
   )
 }
 
+function PlayerSilverRow({ stat, rowClass, rankClass }) {
+  const [expanded, setExpanded] = useState(false)
+  const isZero = stat.silverCount === 0
+  const matchesData = stat.matches || []
+
+  return (
+    <>
+      <tr
+        onClick={() => !isZero && setExpanded(!expanded)}
+        className={`transition-colors ${isZero ? 'opacity-40' : 'cursor-pointer'} ${rowClass}`}
+      >
+        <td className={`px-6 py-3 text-sm font-bold ${rankClass}`}>{stat.rank}</td>
+        <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+        <td className="px-6 py-3 text-sm font-black text-[#F59E0B] text-center">{stat.silverCount}</td>
+        <td className="px-6 py-3 text-sm text-gray-400 text-right">{stat.winRate}%</td>
+      </tr>
+      {expanded && !isZero && matchesData.length > 0 && (
+        <tr className="bg-black/40">
+          <td colSpan="4" className="px-6 py-4">
+            <div className="text-xs text-gray-400 mb-2 font-semibold uppercase tracking-wider">Matches where player placed 2nd:</div>
+            <div className="space-y-2">
+              {matchesData.map((m, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-white/5 p-2 rounded">
+                  <div>
+                    <span className="font-bold text-white">Match {m.matchNumber}</span>
+                    <span className="text-gray-500 ml-2">{m.teams}</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-bold text-[#F59E0B]">Score: {m.score}</div>
+                    <div className="text-gray-500 text-[10px] uppercase tracking-wide">Lost to: {m.rank1Player} ({m.rank1Score})</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  )
+}
+
 // ── Main export ─────────────────────────────────────────────────────────────
 
 export default function HallOfFame() {
@@ -229,7 +278,7 @@ export default function HallOfFame() {
   }, [activeModal])
 
   const allStats = getAllPlayerStats()
-  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostConsistent, mostConsecutiveTop3, highestWinRate, mostImproved, sharpshooter, improvementStats, sharpshooterStats } =
+  const { highestTotalPoints, mostWins, mostTop3, highestScoreEntries, bestStreakEntries, mostGames, mostConsistent, mostConsecutiveTop3, highestWinRate, mostImproved, sharpshooter, improvementStats, sharpshooterStats, silverMedals, maxSilver, topSilverPlayers } =
     computeRecords(allStats)
 
   const cards = [
@@ -324,6 +373,15 @@ export default function HallOfFame() {
       statValue: sharpshooter.length > 0 ? `${sharpshooter[0].sharpshooterCount} matches` : '0 matches',
       players: sharpshooter.map(p => p.player),
       subtitle: 'Most matches within 5% of the winner\'s score (excluding wins).',
+    },
+    {
+      id: 'most-silver-medals',
+      emoji: '😭',
+      title: 'Most Silver Medals',
+      customTheme: { bg: 'from-amber-500/10 to-amber-900/5', border: 'border-amber-400/30', accent: '#F59E0B', glow: 'rgba(245,158,11,0.12)' },
+      statValue: `${maxSilver} times`,
+      players: topSilverPlayers.length > 0 ? topSilverPlayers : ['—'],
+      subtitle: 'Most rank 2 finishes in the season.',
     },
   ]
 
@@ -704,6 +762,57 @@ export default function HallOfFame() {
               <td className="px-6 py-3 text-sm text-gray-400">—</td>
               <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
               <td colSpan="3" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
+            </tr>
+          ))}
+        </>
+      )
+    }
+    else if (activeModal === 'most-silver-medals') {
+      modalTitle = "Most Silver Medals"
+      modalDesc = "Most rank 2 finishes in the season."
+
+      const ineligible = allStats.filter(s => s.gamesPlayed < 10)
+      const eligibleStats = silverMedals.filter(stat => {
+        const pStats = allStats.find(s => s.player === stat.player)
+        return pStats && pStats.gamesPlayed >= 10
+      })
+
+      const sortedStats = [...eligibleStats].sort((a, b) => b.silverCount - a.silverCount)
+
+      let currentRank = 0
+      let lastVal = null
+      const rankedStats = sortedStats.map((stat) => {
+        const pStats = allStats.find(s => s.player === stat.player)
+        if (stat.silverCount !== lastVal) {
+          currentRank++
+          lastVal = stat.silverCount
+        }
+        return { ...stat, rank: currentRank, winRate: pStats ? pStats.winRate : 0 }
+      })
+
+      tableHeader = (
+        <tr>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Rank</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10">Player</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-center">Silver Medals</th>
+          <th className="px-6 py-3 text-xs font-semibold tracking-wider text-gray-400 uppercase border-b border-white/10 text-right">Win Rate %</th>
+        </tr>
+      )
+
+      tableBody = (
+        <>
+          {rankedStats.map((stat) => {
+            const rowClass = stat.rank === 1 ? 'bg-yellow-500/10' : stat.rank === 2 ? 'bg-gray-400/10' : stat.rank === 3 ? 'bg-[#CD7F32]/10' : 'hover:bg-white/5'
+            const rankClass = stat.rank === 1 ? 'text-yellow-400' : stat.rank === 2 ? 'text-gray-300' : stat.rank === 3 ? 'text-[#CD7F32]' : 'text-gray-400'
+            return (
+              <PlayerSilverRow key={stat.player} stat={stat} rowClass={rowClass} rankClass={rankClass} />
+            )
+          })}
+          {ineligible.map(stat => (
+            <tr key={stat.player} className="opacity-40">
+              <td className="px-6 py-3 text-sm text-gray-400">—</td>
+              <td className="px-6 py-3 text-sm font-bold text-white">{stat.player}</td>
+              <td colSpan="2" className="px-6 py-3 text-sm text-gray-400 text-right">Insufficient data ({stat.gamesPlayed} games)</td>
             </tr>
           ))}
         </>
