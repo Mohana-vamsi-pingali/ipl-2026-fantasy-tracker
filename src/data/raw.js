@@ -743,4 +743,16 @@ Match-72 SRH vs RR
 7-@Ricky -1071
 8-@Krishna -1050.5
 9-@Narsi Reddy -930
+
+Match-73 RR vs GT
+1-@Vamsi -1173
+2-@Pranay -1105
+3-@Narsi Reddy -1094
+4-@Krishna -1084
+5-@Arjun -1083
+6-@Ricky -1072
+7-@Bhanu -1004.5
+8-@Abhishek -993
+9-@Sai Teja -945.5
+10-@Prem -920
 `
