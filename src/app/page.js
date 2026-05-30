@@ -2,6 +2,7 @@ import { getAllPlayerStats } from '@/lib/stats'
 import HomePageClient from '@/components/HomePageClient'
 import HallOfFame from '@/components/HallOfFame'
 import HallOfDoom from '@/components/HallOfDoom'
+import TeamSpecialists from '@/components/TeamSpecialists'
 import Podiums from '@/components/Podiums'
 
 export const metadata = {
@@ -52,6 +53,9 @@ export default function HomePage() {
       <p className="mt-4 text-xs text-gray-600 text-right">
         🥇 Gold · 🥈 Silver · 🥉 Bronze rows reflect current table sort &nbsp;·&nbsp; 🏆 = Season leader by total points
       </p>
+
+      {/* Team Specialists */}
+      <TeamSpecialists />
 
       {/* Hall of Fame */}
       <HallOfFame />

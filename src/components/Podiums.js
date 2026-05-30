@@ -148,7 +148,7 @@ function ChampionshipPodiumChart({ data }) {
             <h3 className="text-xl font-bold text-white mb-2">🏆 Championship Points System</h3>
             <p className="text-sm text-gray-400 mb-6">Points awarded per match based on finishing rank. Skipping a match earns 0 points.</p>
             
-            <div className="overflow-hidden rounded-xl border border-white/5 bg-white/5">
+            <div className="overflow-y-auto max-h-[60vh] rounded-xl border border-white/5 bg-white/5 custom-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
               <table className="w-full text-sm text-left">
                 <thead className="bg-white/5 text-gray-400 text-xs uppercase">
                   <tr>
@@ -192,7 +192,7 @@ function ChampionshipPodiumChart({ data }) {
               <p className="text-sm text-gray-400 mb-6">Total championship points accumulated across all matches.</p>
             </div>
             
-            <div className="overflow-y-auto rounded-xl border border-white/5 bg-white/5 custom-scrollbar flex-1">
+            <div className="overflow-y-auto rounded-xl border border-white/5 bg-white/5 custom-scrollbar flex-1" style={{ WebkitOverflowScrolling: 'touch' }}>
               <table className="w-full text-sm text-left">
                 <thead className="bg-white/5 text-gray-400 text-xs uppercase sticky top-0 backdrop-blur-md">
                   <tr>

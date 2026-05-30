@@ -814,3 +814,77 @@ export function getChampionshipStandings() {
 
   return Object.values(standingsMap).sort((a, b) => b.championshipPoints - a.championshipPoints)
 }
+
+// ---------------------------------------------------------------------------
+// getTeamSpecialists()
+// ---------------------------------------------------------------------------
+export function getTeamSpecialists() {
+  const IPL_TEAMS = [
+    { abbr: 'CSK', fullName: 'Chennai Super Kings', color: '#F9CD1C' },
+    { abbr: 'MI', fullName: 'Mumbai Indians', color: '#004BA0' },
+    { abbr: 'RCB', fullName: 'Royal Challengers Bengaluru', color: '#EC1C24' },
+    { abbr: 'RR', fullName: 'Rajasthan Royals', color: '#EA1A7F' },
+    { abbr: 'KKR', fullName: 'Kolkata Knight Riders', color: '#7B2FBE' },
+    { abbr: 'PBKS', fullName: 'Punjab Kings', color: '#ED1B24' },
+    { abbr: 'SRH', fullName: 'Sunrisers Hyderabad', color: '#F7A721' },
+    { abbr: 'DC', fullName: 'Delhi Capitals', color: '#0078BC' },
+    { abbr: 'GT', fullName: 'Gujarat Titans', color: '#7B8B9A' },
+    { abbr: 'LSG', fullName: 'Lucknow Super Giants', color: '#A0E6FF' }
+  ]
+
+  const teamData = IPL_TEAMS.map(team => ({
+    team: team.abbr,
+    fullName: team.fullName,
+    color: team.color,
+    matchesInvolved: 0,
+    playerWins: {} // { "Arjun": 5, "Prem": 3 }
+  }))
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    // Extract teams from "CSK vs RR"
+    // Handle PK to PBKS mapping
+    const matchTeamsRaw = match.teams.split('vs').map(t => t.trim().toUpperCase())
+    const matchTeams = matchTeamsRaw.map(t => t === 'PK' ? 'PBKS' : t)
+
+    // Find rank 1 players
+    const rank1Results = match.results.filter(r => r.rank === 1)
+    if (rank1Results.length === 0) continue
+
+    for (const teamAbbr of matchTeams) {
+      const teamObj = teamData.find(t => t.team === teamAbbr)
+      if (teamObj) {
+        teamObj.matchesInvolved++
+        
+        // Award a win to all rank 1 players for this team
+        for (const res of rank1Results) {
+          if (!teamObj.playerWins[res.player]) {
+            teamObj.playerWins[res.player] = 0
+          }
+          teamObj.playerWins[res.player]++
+        }
+      }
+    }
+  }
+
+  // Calculate specialists array for each team
+  return teamData.map(teamObj => {
+    // Convert playerWins object to array and sort by wins descending
+    const winArray = Object.entries(teamObj.playerWins)
+      .map(([player, wins]) => ({ player, wins }))
+      .sort((a, b) => b.wins - a.wins)
+
+    const topWins = winArray.length > 0 ? winArray[0].wins : 0
+    const topPlayers = winArray.filter(w => w.wins === topWins).map(w => w.player)
+
+    return {
+      team: teamObj.team,
+      fullName: teamObj.fullName,
+      color: teamObj.color,
+      matchesInvolved: teamObj.matchesInvolved,
+      topPlayers: topWins > 0 ? topPlayers : [],
+      topWins: topWins
+    }
+  })
+}

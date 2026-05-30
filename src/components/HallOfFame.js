@@ -840,7 +840,7 @@ export default function HallOfFame() {
             <p className="text-sm text-gray-400 mt-1">{modalDesc}</p>
           </div>
 
-          <div className="flex-1 p-0 overflow-y-auto custom-scrollbar">
+          <div className="flex-1 p-0 overflow-y-auto custom-scrollbar" style={{ WebkitOverflowScrolling: 'touch' }}>
             <table className="w-full text-left border-collapse">
               <thead className="bg-[#0a0f1c] sticky top-0 z-10">
                 {tableHeader}
