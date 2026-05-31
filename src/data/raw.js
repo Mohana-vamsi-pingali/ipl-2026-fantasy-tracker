@@ -330,7 +330,7 @@ Match-34 RCB vs GT
 9-@Sai Teja -689.5
 10-@Ricky -589
 
-Match-35 RR vs DC
+Match-35 PK vs DC
 1-@Prem -1384.5
 2-@Krishna -1213
 3-@Narsi Reddy -1177
