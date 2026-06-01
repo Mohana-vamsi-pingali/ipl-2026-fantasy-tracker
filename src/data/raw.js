@@ -755,4 +755,15 @@ Match-73 RR vs GT
 8-@Abhishek -993
 9-@Sai Teja -945.5
 10-@Prem -920
+
+Match-74 RCB vs GT
+1-@Arjun -849.5 
+2-@Pranay -753.5
+3-@Krishna -727
+4-@Prem -721
+5-@Vamsi -611
+6-@Narsi Reddy -606
+7-@Ricky -566.5
+8-@Bhanu -561.5
+9-@Sai Teja -476
 `
