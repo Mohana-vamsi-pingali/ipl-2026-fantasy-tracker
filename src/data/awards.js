@@ -14,16 +14,16 @@ export const fameAwards = [
 ]
 
 export const doomAwards = [
-  { id: 'doom-1', title: 'Most Last Place Finishes', icon: '😤', player: '', description: 'Most times finishing dead last among participants' },
-  { id: 'doom-2', title: 'Worst Losing Streak', icon: '🥶', player: '', description: 'Most consecutive matches without a win. Skips not counted' },
-  { id: 'doom-3', title: 'Most Volatile Player', icon: '📊', player: '', description: 'Highest score standard deviation — boom or bust' },
-  { id: 'doom-4', title: 'Slowest Starter', icon: '🐢', player: '', description: 'Lowest avg score in first 10 matches played' },
-  { id: 'doom-5', title: 'Most Skips', icon: '💀', player: '', description: 'Most matches skipped across the season' },
-  { id: 'doom-6', title: 'Ghost Award', icon: '👻', player: '', description: 'Longest consecutive streak of skipped matches' },
-  { id: 'doom-7', title: 'Closest Near Miss', icon: '💔', player: '', description: 'Came 2nd by the smallest margin across all matches' },
-  { id: 'doom-8', title: 'Wooden Spoon', icon: '🗑️', player: '', description: 'Lowest total points in the season' },
-  { id: 'doom-9', title: 'Worst Single Match Score', icon: '📆', player: '', description: 'Lowest individual score recorded this season' },
-  { id: 'doom-10', title: 'Below Average Most Often', icon: '😬', player: '', description: 'Most matches scored below the day\'s match average' },
-  { id: 'doom-11', title: 'Least Wins', icon: '😶', player: '', description: 'Fewest rank 1 finishes. Min 10 games' },
-  { id: 'doom-12', title: 'Least Improved', icon: '📉', player: '', description: 'Smallest avg score improvement across the season' },
+  { id: 'doom-1', title: 'Most Last Place Finishes', icon: '😤', player: '', description: 'Most times finishing dead last among participants', image: '/awards/most-last-place-finishes.png' },
+  { id: 'doom-2', title: 'Worst Losing Streak', icon: '🥶', player: '', description: 'Most consecutive matches without a win. Skips not counted', image: '/awards/worst-losing-streak.png' },
+  { id: 'doom-3', title: 'Most Volatile Player', icon: '📊', player: '', description: 'Highest score standard deviation — boom or bust', image: '/awards/most-volatile-player.png' },
+  { id: 'doom-4', title: 'Slowest Starter', icon: '🐢', player: '', description: 'Lowest avg score in first 10 matches played', image: '/awards/slowest-starter.png' },
+  { id: 'doom-5', title: 'Most Skips', icon: '💀', player: '', description: 'Most matches skipped across the season', image: '/awards/most-skips.png' },
+  { id: 'doom-6', title: 'Ghost Award', icon: '👻', player: '', description: 'Longest consecutive streak of skipped matches', image: '/awards/ghost-award.png' },
+  { id: 'doom-7', title: 'Closest Near Miss', icon: '💔', player: '', description: 'Came 2nd by the smallest margin across all matches', image: '/awards/closest-near-miss.png' },
+  { id: 'doom-8', title: 'Wooden Spoon', icon: '🗑️', player: '', description: 'Lowest total points in the season', image: '/awards/wooden-spoon.png' },
+  { id: 'doom-9', title: 'Worst Single Match Score', icon: '📆', player: '', description: 'Lowest individual score recorded this season', image: '/awards/worst-single-match-score.png' },
+  { id: 'doom-10', title: 'Below Average Most Often', icon: '😬', player: '', description: 'Most matches scored below the day\'s match average', image: '/awards/below-average-most-often.png' },
+  { id: 'doom-11', title: 'Least Wins', icon: '😶', player: '', description: 'Fewest rank 1 finishes. Min 10 games', image: '/awards/least-wins.png' },
+  { id: 'doom-12', title: 'Least Improved', icon: '📉', player: '', description: 'Smallest avg score improvement across the season', image: '/awards/least-improved.png' },
 ]

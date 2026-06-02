@@ -293,6 +293,14 @@ const animationsCss = `
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-modal-enter {
+  animation: fadeInScale 300ms cubic-bezier(0.2, 0, 0, 1) forwards;
+}
 `
 
 // --- Components ---
@@ -433,7 +441,18 @@ export default function AwardsPage() {
   const [displayedTab, setDisplayedTab] = useState('fame')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [slideDir, setSlideDir] = useState('translate-x-0')
+  const [selectedAward, setSelectedAward] = useState(null)
   const observerRef = useRef(null)
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (selectedAward) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [selectedAward])
 
   // Curtain State
   const [showCurtain, setShowCurtain] = useState(true)
@@ -488,7 +507,7 @@ export default function AwardsPage() {
   const renderAwards = (awardsList, type) => (
     <div className="mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 md:max-w-[600px] lg:max-w-none lg:grid-cols-2 gap-8 awards-grid">
       {awardsList.map((aw, index) => (
-        <div key={aw.id} className={`card-perspective-wrapper ${type === 'fame' ? 'fame-card-wrapper' : 'doom-card-wrapper'}`}>
+        <div key={aw.id} className={`card-perspective-wrapper cursor-pointer ${type === 'fame' ? 'fame-card-wrapper' : 'doom-card-wrapper'}`} onClick={() => setSelectedAward(aw)}>
           <div
             className={`reveal-card flex flex-col overflow-hidden rounded-2xl border-2 bg-[#06091a] shadow-2xl ${type === 'fame'
                 ? 'fame-flash border-yellow-400/40 shadow-[0_10px_30px_rgba(250,204,21,0.1)]'
@@ -613,6 +632,29 @@ export default function AwardsPage() {
         {/* Spacer for bottom */}
         <div className="h-16" />
       </div>
+
+      {/* Full-Screen Image Modal */}
+      {selectedAward && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md animate-modal-enter" 
+          onClick={() => setSelectedAward(null)}
+        >
+          <div className="relative w-[95vw] h-[95vh] md:w-[90vw] md:h-[90vh] max-w-6xl max-h-[90vh]">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setSelectedAward(null); }}
+              className="absolute -top-10 right-0 md:-right-10 text-white/70 hover:text-white text-5xl focus:outline-none transition-colors z-50 leading-none"
+            >
+              &times;
+            </button>
+            <Image
+              src={selectedAward.image || "/awards/award.jpeg"}
+              alt={selectedAward.title}
+              fill
+              className="object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
