@@ -1,16 +1,16 @@
 export const fameAwards = [
-  { id: 'fame-1', title: 'Highest Total Points', icon: '🌟', player: '', description: 'Most total fantasy points accumulated across the entire season' },
-  { id: 'fame-2', title: 'Most Wins', icon: '🏆', player: '', description: 'Most rank 1 finishes across all matches' },
-  { id: 'fame-3', title: 'Most Top 3 Finishes', icon: '🎖️', player: '', description: 'Most podium finishes across the season' },
-  { id: 'fame-4', title: 'Highest Score', icon: '⚡', player: '', description: 'Highest single match score recorded this season' },
-  { id: 'fame-5', title: 'Longest Win Streak', icon: '🔥', player: '', description: 'Most consecutive match wins' },
-  { id: 'fame-6', title: 'Most Games Played', icon: '📅', player: '', description: 'Most matches participated in this season' },
-  { id: 'fame-7', title: 'Most Consecutive Top 3s', icon: '🔝', player: '', description: 'Longest streak of top 3 finishes. Skips not counted' },
-  { id: 'fame-8', title: 'Most Consistent', icon: '🎯', player: '', description: 'Lowest score standard deviation across the season' },
-  { id: 'fame-9', title: 'Highest Win Rate', icon: '⚡', player: '', description: 'Best wins per game ratio. Min 10 games' },
-  { id: 'fame-10', title: 'Most Improved', icon: '📈', player: '', description: 'Biggest avg score improvement: first half vs second half of season' },
-  { id: 'fame-11', title: 'Sharpshooter', icon: '🏹', player: '', description: 'Most matches within 5% of the winner\'s score' },
-  { id: 'fame-12', title: 'Most Silver Medals', icon: '😭', player: '', description: 'Most rank 2 finishes in the season' },
+  { id: 'fame-1', title: 'Highest Total Points', icon: '🌟', player: '', description: 'Most total fantasy points accumulated across the entire season', image: '/awards/highest-total-points.png' },
+  { id: 'fame-2', title: 'Most Wins', icon: '🏆', player: '', description: 'Most rank 1 finishes across all matches', image: '/awards/most-wins.png' },
+  { id: 'fame-3', title: 'Most Top 3 Finishes', icon: '🎖️', player: '', description: 'Most podium finishes across the season', image: '/awards/most-top-3-finishes.png' },
+  { id: 'fame-4', title: 'Highest Score', icon: '⚡', player: '', description: 'Highest single match score recorded this season', image: '/awards/highest-score.jpeg' },
+  { id: 'fame-5', title: 'Longest Win Streak', icon: '🔥', player: '', description: 'Most consecutive match wins', image: '/awards/longest-win-streak.png' },
+  { id: 'fame-6', title: 'Most Games Played', icon: '📅', player: '', description: 'Most matches participated in this season', image: '/awards/most-games-played.png' },
+  { id: 'fame-7', title: 'Most Consecutive Top 3s', icon: '🔝', player: '', description: 'Longest streak of top 3 finishes. Skips not counted', image: '/awards/most-consecutive-top-3-finishes.png' },
+  { id: 'fame-8', title: 'Most Consistent', icon: '🎯', player: '', description: 'Lowest score standard deviation across the season', image: '/awards/most-consistent.png' },
+  { id: 'fame-9', title: 'Highest Win Rate', icon: '⚡', player: '', description: 'Best wins per game ratio. Min 10 games', image: '/awards/highest-win-rate.png' },
+  { id: 'fame-10', title: 'Most Improved', icon: '📈', player: '', description: 'Biggest avg score improvement: first half vs second half of season', image: '/awards/most-improved.png' },
+  { id: 'fame-11', title: 'Sharpshooter', icon: '🏹', player: '', description: 'Most matches within 5% of the winner\'s score', image: '/awards/sharpshooter.png' },
+  { id: 'fame-12', title: 'Most Silver Medals', icon: '😭', player: '', description: 'Most rank 2 finishes in the season', image: '/awards/most-silver-medals.png' },
 ]
 
 export const doomAwards = [

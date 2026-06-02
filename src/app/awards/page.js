@@ -14,7 +14,7 @@ import {
 } from '@/lib/stats'
 import { fameAwards, doomAwards } from '@/data/awards'
 
-const AWARDS_ENABLED = 0  // Change to 1 to enable the awards page
+const AWARDS_ENABLED = 1  // Change to 1 to enable the awards page
 
 // --- Compute stats ---
 const stats = getAllPlayerStats()
@@ -39,7 +39,7 @@ const getMinPlayers = (list, field) => {
 
 const fame = fameAwards.map(aw => {
   let players = ''
-  switch(aw.id) {
+  switch (aw.id) {
     case 'fame-1': players = getMaxPlayers(stats, 'totalPoints'); break;
     case 'fame-2': players = getMaxPlayers(stats, 'wins'); break;
     case 'fame-3': players = getMaxPlayers(stats, 'top3'); break;
@@ -58,7 +58,7 @@ const fame = fameAwards.map(aw => {
 
 const doom = doomAwards.map(aw => {
   let players = ''
-  switch(aw.id) {
+  switch (aw.id) {
     case 'doom-1': players = getMaxPlayers(stats, 'lastPlaceCount'); break;
     case 'doom-2': players = getMaxPlayers(worstLosingStreaks, 'worstStreak'); break;
     case 'doom-3': players = getMaxPlayers(stats.filter(s => s.gamesPlayed >= 5), 'stdDev'); break;
@@ -312,13 +312,13 @@ function AmbientParticles({ tab }) {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden will-change-transform">
       {particles.map(p => (
-        <div key={p.id} 
-             className={`absolute rounded-full transition-colors duration-1000 ${tab === 'fame' ? 'bg-[#FFD700]' : 'bg-[#FF4444]'}`}
-             style={{
-               width: '4px', height: '4px',
-               left: `${p.left}%`, bottom: `${p.bottom}%`,
-               animation: `${tab === 'fame' ? 'floatUpFame' : (p.isDoomVariant ? 'floatUpDoom1' : 'floatUpDoom2')} ${p.duration}s linear ${p.delay}s infinite`
-             }}
+        <div key={p.id}
+          className={`absolute rounded-full transition-colors duration-1000 ${tab === 'fame' ? 'bg-[#FFD700]' : 'bg-[#FF4444]'}`}
+          style={{
+            width: '4px', height: '4px',
+            left: `${p.left}%`, bottom: `${p.bottom}%`,
+            animation: `${tab === 'fame' ? 'floatUpFame' : (p.isDoomVariant ? 'floatUpDoom1' : 'floatUpDoom2')} ${p.duration}s linear ${p.delay}s infinite`
+          }}
         />
       ))}
     </div>
@@ -342,10 +342,10 @@ function TypewriterText({ text, type }) {
       }
       setIsTyping(true)
       setShowCursor(true)
-      
+
       let i = 0
       let current = ''
-      
+
       setTimeout(() => {
         const typeChar = () => {
           if (i < text.length) {
@@ -377,19 +377,18 @@ function TypewriterText({ text, type }) {
         }
       })
     })
-    
+
     observer.observe(parentCard, { attributes: true })
     if (parentCard.classList.contains('is-visible') && displayed === '') startTyping()
-    
+
     return () => observer.disconnect()
   }, [text, isTyping, displayed])
 
   return (
-    <p ref={containerRef} className={`text-2xl font-black mb-3 min-h-[32px] ${
-      type === 'fame' 
-       ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]' 
-       : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]'
-    }`}>
+    <p ref={containerRef} className={`text-2xl font-black mb-3 min-h-[32px] ${type === 'fame'
+        ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]'
+        : 'text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]'
+      }`}>
       {displayed}
       <span className={`inline-block w-[3px] h-[1em] ml-1 align-middle bg-current transition-opacity duration-300 ${showCursor ? 'animate-blink' : 'opacity-0'}`} />
     </p>
@@ -399,7 +398,7 @@ function TypewriterText({ text, type }) {
 function Ticker() {
   const [fameCount, setFameCount] = useState(0)
   const [doomCount, setDoomCount] = useState(0)
-  
+
   useEffect(() => {
     let start = null
     const duration = 1500
@@ -408,15 +407,15 @@ function Ticker() {
         if (!start) start = timestamp
         const progress = Math.min((timestamp - start) / duration, 1)
         const ease = 1 - Math.pow(1 - progress, 4)
-        
+
         setFameCount(Math.floor(ease * 12))
         setDoomCount(Math.floor(ease * 12))
-        
+
         if (progress < 1) requestAnimationFrame(step)
       }
       requestAnimationFrame(step)
     }, 1200)
-    
+
     return () => clearTimeout(timer)
   }, [])
 
@@ -472,11 +471,11 @@ export default function AwardsPage() {
     setActiveTab(tab)
     setIsTransitioning(true)
     setSlideDir('-translate-x-[30px]') // slide out to left
-    
+
     setTimeout(() => {
       setDisplayedTab(tab)
       setSlideDir('translate-x-[30px]') // prep slide in from right
-      
+
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setIsTransitioning(false)
@@ -490,36 +489,35 @@ export default function AwardsPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 md:max-w-[600px] lg:max-w-none lg:grid-cols-2 gap-8 awards-grid">
       {awardsList.map((aw, index) => (
         <div key={aw.id} className={`card-perspective-wrapper ${type === 'fame' ? 'fame-card-wrapper' : 'doom-card-wrapper'}`}>
-          <div 
-            className={`reveal-card flex flex-col overflow-hidden rounded-2xl border-2 bg-[#06091a] shadow-2xl ${
-              type === 'fame' 
-                ? 'fame-flash border-yellow-400/40 shadow-[0_10px_30px_rgba(250,204,21,0.1)]' 
+          <div
+            className={`reveal-card flex flex-col overflow-hidden rounded-2xl border-2 bg-[#06091a] shadow-2xl ${type === 'fame'
+                ? 'fame-flash border-yellow-400/40 shadow-[0_10px_30px_rgba(250,204,21,0.1)]'
                 : 'doom-flash border-red-500/40 shadow-[0_10px_30px_rgba(239,68,68,0.1)]'
-            }`}
+              }`}
             style={{ transitionDelay: index % 2 !== 0 ? '150ms' : '0ms' }}
           >
             <div className="award-image-wrapper bg-[#0a0f25] border-b border-white/10">
-              <Image 
-                src="/awards/award.jpeg" 
+              <Image
+                src={aw.image || "/awards/award.jpeg"}
                 alt={aw.title}
-                fill 
+                fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 600px, 50vw"
-                className="reveal-image rounded-t-xl" 
+                className="reveal-image rounded-t-xl"
                 style={{ objectFit: 'cover', objectPosition: 'center center' }}
-                loading="lazy" 
+                loading="lazy"
               />
             </div>
             <div className="reveal-text p-6 flex flex-col flex-grow bg-gradient-to-b from-white/5 to-transparent relative z-20">
-               <div className="flex items-center gap-3 mb-2">
-                 <span className="text-3xl">{aw.icon}</span>
-                 <h3 className="text-2xl font-bold text-gray-100">{aw.title}</h3>
-               </div>
-               
-               <TypewriterText text={aw.player} type={type} />
-               
-               <p className="text-base text-gray-400 leading-snug mt-auto">
-                 {aw.description}
-               </p>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">{aw.icon}</span>
+                <h3 className="text-2xl font-bold text-gray-100">{aw.title}</h3>
+              </div>
+
+              <TypewriterText text={aw.player} type={type} />
+
+              <p className="text-base text-gray-400 leading-snug mt-auto">
+                {aw.description}
+              </p>
             </div>
           </div>
         </div>
@@ -542,21 +540,21 @@ export default function AwardsPage() {
   return (
     <div className="min-h-screen relative bg-[#06091a] overflow-x-hidden text-white">
       <style dangerouslySetInnerHTML={{ __html: animationsCss }} />
-      
+
       {/* 1. Cinematic Curtain */}
       {showCurtain && (
         <div className="fixed inset-0 z-50 curtain">
-           <div className="curtain-bottom-edge" />
-           {Array.from({ length: 12 }).map((_, i) => (
-             <div key={i} className="absolute bottom-0 bg-[#FFD700] rounded-full"
-                  style={{
-                    width: `${Math.random() * 6 + 2}px`,
-                    height: `${Math.random() * 6 + 2}px`,
-                    left: `${Math.random() * 100}%`,
-                    '--rand': Math.random(),
-                    animation: `burstUp ${Math.random() * 400 + 600}ms ease-out 300ms forwards`
-                  }} />
-           ))}
+          <div className="curtain-bottom-edge" />
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="absolute bottom-0 bg-[#FFD700] rounded-full"
+              style={{
+                width: `${Math.random() * 6 + 2}px`,
+                height: `${Math.random() * 6 + 2}px`,
+                left: `${Math.random() * 100}%`,
+                '--rand': Math.random(),
+                animation: `burstUp ${Math.random() * 400 + 600}ms ease-out 300ms forwards`
+              }} />
+          ))}
         </div>
       )}
 
@@ -564,12 +562,11 @@ export default function AwardsPage() {
       <AmbientParticles tab={displayedTab} />
 
       {/* Dynamic Background Pulse */}
-      <div 
-        className={`fixed inset-0 z-0 pointer-events-none transition-all duration-1000 ease-in-out ${
-          displayedTab === 'fame' 
-            ? 'bg-[radial-gradient(ellipse_at_top,rgba(250,204,21,0.06),transparent_70%)]' 
+      <div
+        className={`fixed inset-0 z-0 pointer-events-none transition-all duration-1000 ease-in-out ${displayedTab === 'fame'
+            ? 'bg-[radial-gradient(ellipse_at_top,rgba(250,204,21,0.06),transparent_70%)]'
             : 'bg-[radial-gradient(ellipse_at_top,rgba(239,68,68,0.06),transparent_70%)]'
-        }`} 
+          }`}
       />
 
       <div className="relative z-10">
@@ -589,21 +586,19 @@ export default function AwardsPage() {
           <div className="max-w-md mx-auto px-4 flex justify-center gap-4">
             <button
               onClick={() => handleTabChange('fame')}
-              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 ${
-                activeTab === 'fame'
+              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 ${activeTab === 'fame'
                   ? 'bg-yellow-400/10 border-yellow-400 text-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
                   : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'
-              }`}
+                }`}
             >
               🏆 Hall of Fame
             </button>
             <button
               onClick={() => handleTabChange('doom')}
-              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 ${
-                activeTab === 'doom'
+              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 ${activeTab === 'doom'
                   ? 'bg-red-500/10 border-red-500 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
                   : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'
-              }`}
+                }`}
             >
               💀 Hall of Doom
             </button>
