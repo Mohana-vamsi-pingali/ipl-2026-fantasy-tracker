@@ -2,7 +2,7 @@ export const fameAwards = [
   { id: 'fame-1', title: 'Highest Total Points', icon: '🌟', player: '', description: 'Most total fantasy points accumulated across the entire season', image: '/awards/highest-total-points.png' },
   { id: 'fame-2', title: 'Most Wins', icon: '🏆', player: '', description: 'Most rank 1 finishes across all matches', image: '/awards/most-wins.png' },
   { id: 'fame-3', title: 'Most Top 3 Finishes', icon: '🎖️', player: '', description: 'Most podium finishes across the season', image: '/awards/most-top-3-finishes.png' },
-  { id: 'fame-4', title: 'Highest Score', icon: '⚡', player: '', description: 'Highest single match score recorded this season', image: '/awards/highest-score.jpeg' },
+  { id: 'fame-4', title: 'Highest Score', icon: '⚡', player: '', description: 'Highest single match score recorded this season', image: '/awards/highest-score.png' },
   { id: 'fame-5', title: 'Longest Win Streak', icon: '🔥', player: '', description: 'Most consecutive match wins', image: '/awards/longest-win-streak.png' },
   { id: 'fame-6', title: 'Most Games Played', icon: '📅', player: '', description: 'Most matches participated in this season', image: '/awards/most-games-played.png' },
   { id: 'fame-7', title: 'Most Consecutive Top 3s', icon: '🔝', player: '', description: 'Longest streak of top 3 finishes. Skips not counted', image: '/awards/most-consecutive-top-3-finishes.png' },
