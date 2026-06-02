@@ -74,7 +74,7 @@ const doom = doomAwards.map(aw => {
     case 'doom-5': players = getMaxPlayers(stats, 'skips'); break;
     case 'doom-6': players = getMaxPlayers(ghostStats, 'longestSkipStreak'); break;
     case 'doom-7': players = getMinPlayers(nearMisses, 'gapPercent'); break;
-    case 'doom-8': players = getMinPlayers(stats, 'totalPoints'); break;
+    case 'doom-8': players = 'Pranay'; break; // Hardcoded per request
     case 'doom-9': players = getMinPlayers(stats, 'worstScore'); break;
     case 'doom-10': players = getMaxPlayers(stats, 'belowAvgCount'); break;
     case 'doom-11': players = getMinPlayers(stats.filter(s => s.gamesPlayed >= 10), 'wins'); break;

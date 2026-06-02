@@ -37,7 +37,7 @@ export const podiumAwards = [
 
 export const thanksAwards = [
   { id: 'thanks-1', title: 'Arjun', icon: '🤝', player: 'Arjun', description: 'Special Thanks', image: '/awards/arjun-special-thanks.png' },
-  { id: 'thanks-2', title: 'Mohan', icon: '🤝', player: 'Mohan', description: 'Special Thanks', image: '/awards/mohan-special-thanks.png' },
+  { id: 'thanks-2', title: 'Vamsi', icon: '🤝', player: 'Vamsi', description: 'Special Thanks', image: '/awards/mohan-special-thanks.png' },
   { id: 'thanks-3', title: 'Pranay', icon: '🤝', player: 'Pranay', description: 'Special Thanks', image: '/awards/pranay-special-thanks.png' },
   { id: 'thanks-4', title: 'Prem', icon: '🤝', player: 'Prem', description: 'Special Thanks', image: '/awards/prem-special-thanks.png' },
 ]
