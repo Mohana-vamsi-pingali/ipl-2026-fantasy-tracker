@@ -58,6 +58,7 @@ function calcStreaks(playerName) {
 export function getAllPlayerStats() {
   const allLastPlace = getLastPlaceStats()
   const allSilverMedals = getSilverMedalStats()
+  const allBronzeMedals = getBronzeMedalStats()
   const allBelowAvg = getBelowAverageStats()
   const championshipStandings = getChampionshipStandings()
 
@@ -83,6 +84,7 @@ export function getAllPlayerStats() {
     const bestTop3Streak = getBestTop3Streaks(player)[0]?.length || 0
     const lastPlaceCount = allLastPlace.find(s => s.player === player)?.lastPlaceCount || 0
     const silverMedals = allSilverMedals.find(s => s.player === player)?.silverCount || 0
+    const bronzeMedals = allBronzeMedals.find(s => s.player === player)?.bronzeCount || 0
     const belowAvgCount = allBelowAvg.find(s => s.player === player)?.belowAvgCount || 0
     const championshipPoints = championshipStandings.find(s => s.player === player)?.championshipPoints || 0
     const stdDevScore = stdDev(scores)
@@ -102,6 +104,7 @@ export function getAllPlayerStats() {
       bestTop3Streak,
       lastPlaceCount,
       silverMedals,
+      bronzeMedals,
       belowAvgCount,
       championshipPoints,
       stdDev: stdDevScore,
@@ -621,6 +624,44 @@ export function getSilverMedalStats() {
   }
 
   return Object.values(statsMap).sort((a, b) => b.silverCount - a.silverCount)
+}
+
+// ---------------------------------------------------------------------------
+// getBronzeMedalStats()
+// ---------------------------------------------------------------------------
+export function getBronzeMedalStats() {
+  const statsMap = {}
+  for (const player of allPlayers) {
+    statsMap[player] = { player, bronzeCount: 0, matches: [] }
+  }
+
+  for (const match of matches) {
+    if (!match.results || match.results.length === 0) continue
+
+    const ranks = [...new Set(match.results.map(r => r.rank))].sort((a, b) => a - b)
+    if (ranks.length < 3) continue
+
+    const rank1Score = match.results.find(r => r.rank === ranks[0]).score
+    const rank1Players = match.results.filter(r => r.rank === ranks[0]).map(r => r.player).join(', ')
+
+    const rank3Results = match.results.filter(r => r.rank === ranks[2])
+
+    for (const res of rank3Results) {
+      if (!statsMap[res.player]) {
+        statsMap[res.player] = { player: res.player, bronzeCount: 0, matches: [] }
+      }
+      statsMap[res.player].bronzeCount++
+      statsMap[res.player].matches.push({
+        matchNumber: match.matchNumber,
+        teams: match.teams,
+        score: res.score,
+        rank1Player: rank1Players,
+        rank1Score: rank1Score
+      })
+    }
+  }
+
+  return Object.values(statsMap).sort((a, b) => b.bronzeCount - a.bronzeCount)
 }
 
 // ---------------------------------------------------------------------------

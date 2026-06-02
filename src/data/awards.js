@@ -11,6 +11,7 @@ export const fameAwards = [
   { id: 'fame-10', title: 'Most Improved', icon: '📈', player: '', description: 'Biggest avg score improvement: first half vs second half of season', image: '/awards/most-improved.png' },
   { id: 'fame-11', title: 'Sharpshooter', icon: '🏹', player: '', description: 'Most matches within 5% of the winner\'s score', image: '/awards/sharpshooter.png' },
   { id: 'fame-12', title: 'Most Silver Medals', icon: '😭', player: '', description: 'Most rank 2 finishes in the season', image: '/awards/most-silver-medals.png' },
+  { id: 'fame-13', title: 'Most Bronze Medals', icon: '🥉', player: '', description: 'Most 3rd place finishes', image: '/awards/most-third-places.png' },
 ]
 
 export const doomAwards = [
@@ -26,4 +27,17 @@ export const doomAwards = [
   { id: 'doom-10', title: 'Below Average Most Often', icon: '😬', player: '', description: 'Most matches scored below the day\'s match average', image: '/awards/below-average-most-often.png' },
   { id: 'doom-11', title: 'Least Wins', icon: '😶', player: '', description: 'Fewest rank 1 finishes. Min 10 games', image: '/awards/least-wins.png' },
   { id: 'doom-12', title: 'Least Improved', icon: '📉', player: '', description: 'Smallest avg score improvement across the season', image: '/awards/least-improved.png' },
+]
+
+export const podiumAwards = [
+  { id: 'podium-1', title: 'Championship Podium', icon: '🏆', player: '', description: 'Top 3 players with the most championship points', image: '/awards/most-championship-points-podium.jpeg' },
+  { id: 'podium-2', title: 'Total Wins Podium', icon: '🥇', player: '', description: 'Top 3 players with the most total wins', image: '/awards/most-wins-podium.jpeg' },
+  { id: 'podium-3', title: 'Total Points Podium', icon: '🌟', player: '', description: 'Top 3 players with the most total fantasy points', image: '/awards/total-points-podium.jpeg' },
+]
+
+export const thanksAwards = [
+  { id: 'thanks-1', title: 'Arjun', icon: '🤝', player: 'Arjun', description: 'Special Thanks', image: '/awards/arjun-special-thanks.png' },
+  { id: 'thanks-2', title: 'Mohan', icon: '🤝', player: 'Mohan', description: 'Special Thanks', image: '/awards/mohan-special-thanks.png' },
+  { id: 'thanks-3', title: 'Pranay', icon: '🤝', player: 'Pranay', description: 'Special Thanks', image: '/awards/pranay-special-thanks.png' },
+  { id: 'thanks-4', title: 'Prem', icon: '🤝', player: 'Prem', description: 'Special Thanks', image: '/awards/prem-special-thanks.png' },
 ]

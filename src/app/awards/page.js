@@ -10,9 +10,10 @@ import {
   getWorstLosingStreaks,
   getSlowestStarters,
   getGhostAwardStats,
-  getClosestNearMiss
+  getClosestNearMiss,
+  getChampionshipStandings
 } from '@/lib/stats'
-import { fameAwards, doomAwards } from '@/data/awards'
+import { fameAwards, doomAwards, podiumAwards, thanksAwards } from '@/data/awards'
 
 const AWARDS_ENABLED = 1  // Change to 1 to enable the awards page
 
@@ -37,6 +38,12 @@ const getMinPlayers = (list, field) => {
   return list.filter(s => s[field] === minVal).map(s => s.player).join(', ')
 }
 
+const getTop3 = (list, field) => {
+  if (!list || list.length === 0) return ''
+  const sorted = [...list].sort((a, b) => b[field] - a[field]).slice(0, 3)
+  return sorted.map((s, i) => `${i + 1}. ${s.player}`).join(', ')
+}
+
 const fame = fameAwards.map(aw => {
   let players = ''
   switch (aw.id) {
@@ -52,6 +59,7 @@ const fame = fameAwards.map(aw => {
     case 'fame-10': players = getMaxPlayers(improvements, 'improvement'); break;
     case 'fame-11': players = getMaxPlayers(sharpshooters, 'sharpshooterCount'); break;
     case 'fame-12': players = getMaxPlayers(stats, 'silverMedals'); break;
+    case 'fame-13': players = getMaxPlayers(stats, 'bronzeMedals'); break;
   }
   return { ...aw, player: players }
 })
@@ -73,6 +81,21 @@ const doom = doomAwards.map(aw => {
     case 'doom-12': players = getMinPlayers(improvements, 'improvement'); break;
   }
   return { ...aw, player: players }
+})
+
+const championshipStandings = getChampionshipStandings()
+const podium = podiumAwards.map(aw => {
+  let players = ''
+  switch (aw.id) {
+    case 'podium-1': players = getTop3(championshipStandings, 'championshipPoints'); break;
+    case 'podium-2': players = getTop3(stats, 'wins'); break;
+    case 'podium-3': players = getTop3(stats, 'totalPoints'); break;
+  }
+  return { ...aw, player: players }
+})
+
+const thanks = thanksAwards.map(aw => {
+  return { ...aw }
 })
 
 // --- CSS Animations ---
@@ -406,6 +429,8 @@ function TypewriterText({ text, type }) {
 function Ticker() {
   const [fameCount, setFameCount] = useState(0)
   const [doomCount, setDoomCount] = useState(0)
+  const [podiumCount, setPodiumCount] = useState(0)
+  const [thanksCount, setThanksCount] = useState(0)
 
   useEffect(() => {
     let start = null
@@ -416,8 +441,10 @@ function Ticker() {
         const progress = Math.min((timestamp - start) / duration, 1)
         const ease = 1 - Math.pow(1 - progress, 4)
 
-        setFameCount(Math.floor(ease * 12))
+        setFameCount(Math.floor(ease * 13))
         setDoomCount(Math.floor(ease * 12))
+        setPodiumCount(Math.floor(ease * 3))
+        setThanksCount(Math.floor(ease * 4))
 
         if (progress < 1) requestAnimationFrame(step)
       }
@@ -428,17 +455,21 @@ function Ticker() {
   }, [])
 
   return (
-    <p className="text-xl text-gray-400 max-w-2xl mx-auto font-medium mt-4 tracking-wide">
-      <span className="text-yellow-400 drop-shadow-[0_0_4px_rgba(250,204,21,0.4)]">✨ {fameCount} Hall of Fame Awards</span>
-      <span className="mx-3 text-gray-600">·</span>
-      <span className="text-red-500 drop-shadow-[0_0_4px_rgba(239,68,68,0.4)]">💀 {doomCount} Hall of Doom Awards</span>
+    <p className="text-xl text-gray-400 max-w-4xl mx-auto font-medium mt-4 tracking-wide flex flex-wrap items-center justify-center gap-3">
+      <span className="text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.4)]">🏆 {podiumCount} Podium Awards</span>
+      <span className="text-gray-600 hidden sm:inline">·</span>
+      <span className="text-yellow-400 drop-shadow-[0_0_4px_rgba(250,204,21,0.4)]">✨ {fameCount} Hall of Fame</span>
+      <span className="text-gray-600 hidden sm:inline">·</span>
+      <span className="text-red-500 drop-shadow-[0_0_4px_rgba(239,68,68,0.4)]">💀 {doomCount} Hall of Doom</span>
+      <span className="text-gray-600 hidden sm:inline">·</span>
+      <span className="text-purple-400 drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">🤝 {thanksCount} Special Thanks</span>
     </p>
   )
 }
 
 export default function AwardsPage() {
-  const [activeTab, setActiveTab] = useState('fame')
-  const [displayedTab, setDisplayedTab] = useState('fame')
+  const [activeTab, setActiveTab] = useState('podium')
+  const [displayedTab, setDisplayedTab] = useState('podium')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [slideDir, setSlideDir] = useState('translate-x-0')
   const [selectedAward, setSelectedAward] = useState(null)
@@ -505,12 +536,14 @@ export default function AwardsPage() {
   }
 
   const renderAwards = (awardsList, type) => (
-    <div className="mx-auto max-w-7xl px-4 py-12 grid grid-cols-1 md:max-w-[600px] lg:max-w-none lg:grid-cols-2 gap-8 awards-grid">
+    <div className={`mx-auto px-4 py-12 grid grid-cols-1 gap-8 awards-grid ${type === 'podium' || type === 'thanks' ? 'max-w-[700px]' : 'max-w-7xl md:max-w-[600px] lg:max-w-none lg:grid-cols-2'}`}>
       {awardsList.map((aw, index) => (
-        <div key={aw.id} className={`card-perspective-wrapper cursor-pointer ${type === 'fame' ? 'fame-card-wrapper' : 'doom-card-wrapper'}`} onClick={() => setSelectedAward(aw)}>
+        <div key={aw.id} className={`card-perspective-wrapper cursor-pointer ${type === 'fame' || type === 'podium' || type === 'thanks' ? 'fame-card-wrapper' : 'doom-card-wrapper'}`} onClick={() => setSelectedAward(aw)}>
           <div
-            className={`reveal-card flex flex-col overflow-hidden rounded-2xl border-2 bg-[#06091a] shadow-2xl ${type === 'fame'
+            className={`reveal-card flex flex-col overflow-hidden rounded-2xl border-2 bg-[#06091a] shadow-2xl ${type === 'fame' || type === 'podium'
                 ? 'fame-flash border-yellow-400/40 shadow-[0_10px_30px_rgba(250,204,21,0.1)]'
+                : type === 'thanks'
+                ? 'fame-flash border-purple-500/40 shadow-[0_10px_30px_rgba(168,85,247,0.1)]'
                 : 'doom-flash border-red-500/40 shadow-[0_10px_30px_rgba(239,68,68,0.1)]'
               }`}
             style={{ transitionDelay: index % 2 !== 0 ? '150ms' : '0ms' }}
@@ -602,10 +635,19 @@ export default function AwardsPage() {
 
         {/* Sticky Tabs */}
         <div className="sticky top-[61px] z-40 bg-[#06091a]/90 backdrop-blur-md border-b border-white/10 py-4">
-          <div className="max-w-md mx-auto px-4 flex justify-center gap-4">
+          <div className="max-w-2xl mx-auto px-4 flex justify-center gap-4 flex-wrap">
+            <button
+              onClick={() => handleTabChange('podium')}
+              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 min-w-[140px] ${activeTab === 'podium'
+                  ? 'bg-blue-500/10 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'
+                }`}
+            >
+              🏆 Podium
+            </button>
             <button
               onClick={() => handleTabChange('fame')}
-              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 ${activeTab === 'fame'
+              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 min-w-[140px] ${activeTab === 'fame'
                   ? 'bg-yellow-400/10 border-yellow-400 text-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.3)]'
                   : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'
                 }`}
@@ -621,12 +663,21 @@ export default function AwardsPage() {
             >
               💀 Hall of Doom
             </button>
+            <button
+              onClick={() => handleTabChange('thanks')}
+              className={`flex-1 py-3 px-6 rounded-full font-bold text-lg transition-all duration-300 border-2 min-w-[160px] ${activeTab === 'thanks'
+                  ? 'bg-purple-500/10 border-purple-500 text-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+                  : 'bg-transparent border-white/10 text-gray-400 hover:text-white hover:border-white/30'
+                }`}
+            >
+              🤝 Special Thanks
+            </button>
           </div>
         </div>
 
         {/* Awards Grid Wrapper */}
         <div className={`transition-all duration-300 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'} ${slideDir}`}>
-          {displayedTab === 'fame' ? renderAwards(fame, 'fame') : renderAwards(doom, 'doom')}
+          {displayedTab === 'podium' ? renderAwards(podium, 'podium') : displayedTab === 'fame' ? renderAwards(fame, 'fame') : displayedTab === 'thanks' ? renderAwards(thanks, 'thanks') : renderAwards(doom, 'doom')}
         </div>
 
         {/* Spacer for bottom */}
